@@ -45,7 +45,6 @@ const KoaRouterSwagger = (
   uiConfig: Partial<KoaSwaggerUiOptions>,
 ) => {
   const paths = MapAllMethods(router);
-  console.log(paths);
   return CreateKoaSwagger(paths, router, uiConfig);
 };
 

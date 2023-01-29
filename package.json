@@ -1,6 +1,6 @@
 {
   "name": "koa-router-zod-swagger",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generate swagger specs and host ui based on koa-router and zod configuration",
   "keywords": ["koa", "router", "zod", "swagger"],
   "homepage": "https://github.com/vaso991/koa-router-zod-swagger#readme",
