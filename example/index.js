@@ -10,12 +10,6 @@ app.use(KoaBodyParser());
 
 const router = new KoaRouter();
 
-const optional = z.object({
-  first: z.string()
-}).optional();
-
-console.log(optional._def.innerType);
-
 const RouterSchema = {
   body: z.object({
     string: z.string().optional(),
