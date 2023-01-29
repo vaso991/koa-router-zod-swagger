@@ -36,25 +36,6 @@ type Parameter = {
   schema?: BodyProperty
 };
 
-
-/**
- * parameters:
-        - in: body
-          name: user
-          description: The user to create.
-          schema:
-            type: object
-            required:
-              - userName
-            properties:
-              userName:
-                type: string
-              firstName:
-                type: string
-              lastName:
-                type: string
- */
-
 type IObjectKeys = {
   [key: string]: { description: string };
 };
@@ -128,9 +109,9 @@ const GeneratePathParameters = (
 function FindSchemaInStack(
   stack: Router.Layer | Router.IMiddleware,
 ): ZodValidatorProps | undefined {
-  if (Object.prototype.hasOwnProperty.call(stack, '$VALIDATOR_PROPS')) {
+  if (Object.prototype.hasOwnProperty.call(stack, '_VALIDATOR_PROPS')) {
     // @ts-ignore
-    return stack.$VALIDATOR_PROPS as ZodValidatorProps;
+    return stack._VALIDATOR_PROPS as ZodValidatorProps;
   }
   if ('stack' in stack) {
     for (const stackItem of stack.stack) {

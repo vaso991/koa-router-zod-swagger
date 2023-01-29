@@ -20,6 +20,6 @@ export const ZodValidator = (props: ZodValidatorProps) => {
     }
     return next();
   };
-  _ValidatorMiddleware.$VALIDATOR_PROPS = props;
+  _ValidatorMiddleware._VALIDATOR_PROPS = props;
   return _ValidatorMiddleware;
 };
