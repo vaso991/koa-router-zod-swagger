@@ -10,22 +10,57 @@ import {
   ZodBigInt,
   ZodBoolean,
   ZodArray,
+  ZodOptional,
+  ZodOptionalDef,
 } from 'zod';
 import { ZodValidatorProps } from './ZodValidator';
 
-type Parameters = {
+type BodyProperty = {
+  type: string | null,
+  required?: string[],
+  properties?: BodyProperties,
+  items?: {
+    type: string | null
+  }
+}
+type BodyProperties = {
+  [key: string]: BodyProperty
+}
+
+type Parameter = {
   in: string;
   name: string;
-  type: string | null;
-  required: boolean;
+  description?: string;
+  type?: string | null;
+  required?: boolean;
+  schema?: BodyProperty
 };
+
+
+/**
+ * parameters:
+        - in: body
+          name: user
+          description: The user to create.
+          schema:
+            type: object
+            required:
+              - userName
+            properties:
+              userName:
+                type: string
+              firstName:
+                type: string
+              lastName:
+                type: string
+ */
 
 type IObjectKeys = {
   [key: string]: { description: string };
 };
 
 type PathParametersResponse = {
-  parameters: Parameters[];
+  parameters: Parameter[];
   responses: IObjectKeys;
   tags?: [string];
 };
@@ -45,6 +80,7 @@ const KoaRouterSwagger = (
   uiConfig: Partial<KoaSwaggerUiOptions>,
 ) => {
   const paths = MapAllMethods(router);
+  
   return CreateKoaSwagger(paths, router, uiConfig);
 };
 
@@ -61,6 +97,7 @@ const MapAllMethods = (router: Router) => {
     const specs = GeneratePathParameters(method, stack);
 
     path = FormatPath(path, specs);
+    
     if (!paths[path]) {
       paths[path] = {};
     }
@@ -84,7 +121,7 @@ const GeneratePathParameters = (
     options.tags = [stack.opts.prefix];
   }
   const schema = FindSchemaInStack(stack);
-  FillSchmeParameters(options.parameters, schema);
+  FillSchemeParameters(options.parameters, schema);
   return options;
 };
 
@@ -102,18 +139,18 @@ function FindSchemaInStack(
   }
 }
 
-function FillSchmeParameters(
-  parameters: Parameters[],
+function FillSchemeParameters(
+  parameters: Parameter[],
   schema?: ZodValidatorProps,
 ) {
   if (schema) {
-    schema.body && FillSchemaParameter(parameters, schema.body, 'formData');
+    schema.body && FillSchemaRequestBody(parameters, schema.body);
     schema.query && FillSchemaParameter(parameters, schema.query, 'query');
     schema.params && FillSchemaParameter(parameters, schema.params, 'path');
   }
 }
 const FillSchemaParameter = (
-  parameters: Parameters[],
+  parameters: Parameter[],
   object: AnyZodObject,
   type: string,
 ) => {
@@ -132,8 +169,50 @@ const FillSchemaParameter = (
     });
   }
 };
+const FillSchemaRequestBody = (
+  parameters: Parameter[],
+  object: AnyZodObject,
+  parentObject?: BodyProperty,
+) => {
+  const properties: BodyProperties = {};
+  const required = [];
+  for (const key in object.shape) {
+    const zodType = object.shape[key] as ZodType;
+    properties[key] = {
+      type: GetTypeFromZodType(zodType)
+    };
+    if (zodType instanceof ZodArray) {
+      properties[key].items = {
+        type: GetTypeFromZodType(zodType.element)
+      }
+    }
+    const isRequiredFlag = !zodType.isOptional();
+    if (isRequiredFlag) {
+      required.push(key);
+    }
+    if (zodType instanceof ZodObject) {
+      FillSchemaRequestBody(parameters, zodType, properties[key]);
+    }
+  }
+  if (parentObject) {
+    parentObject.required = required;
+    parentObject.properties = properties;
+    parentObject.type = 'object';
+  } else {
+    parameters.push({
+      in: 'body',
+      name: 'body',
+      required: !object.isOptional(),
+      schema: {
+        type: 'object',
+        required: required,
+        properties: properties
+      }
+    });
+  }
+};
 
-const GetTypeFromZodType = (type: ZodType) => {
+const GetTypeFromZodType = (type: ZodType): string | null => {
   switch (type.constructor) {
     case ZodString:
       return 'string';
@@ -147,6 +226,8 @@ const GetTypeFromZodType = (type: ZodType) => {
       return 'array';
     case ZodObject:
       return 'object';
+    case ZodOptional:
+      return GetTypeFromZodType((type._def as ZodOptionalDef).innerType);
   }
   return null;
 };

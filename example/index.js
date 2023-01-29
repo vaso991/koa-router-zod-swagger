@@ -1,8 +1,8 @@
-import Koa from 'koa';
-import KoaRouter from 'koa-router';
-import { z } from 'zod';
-import KoaBodyParser from 'koa-bodyparser';
-import { ZodValidator, ZodValidatorProps, KoaRouterSwagger } from '../lib';
+const Koa = require('koa');
+const KoaRouter = require('koa-router');
+const { z } = require('zod');
+const KoaBodyParser = require('koa-bodyparser');
+const { ZodValidator, ZodValidatorProps, KoaRouterSwagger } = require('../dist');
 
 const app = new Koa();
 
@@ -10,13 +10,22 @@ app.use(KoaBodyParser());
 
 const router = new KoaRouter();
 
-const RouterSchema: ZodValidatorProps = {
-  query: z.object({
-    queryParam: z.string(),
-  }),
+const optional = z.object({
+  first: z.string()
+}).optional();
+
+console.log(optional._def.innerType);
+
+const RouterSchema = {
   body: z.object({
-    bodyParamString: z.string(),
-    bodyParamNumber: z.number(),
+    string: z.string().optional(),
+    number: z.number(),
+    boolean: z.boolean(),
+    object: z.object({
+      element1: z.string(),
+      element2: z.string()
+    }),
+    array: z.array(z.string())
   }),
   params: z.object({
     param1: z.string(),

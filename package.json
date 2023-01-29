@@ -1,8 +1,13 @@
 {
   "name": "koa-router-zod-swagger",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Generate swagger specs and host ui based on koa-router and zod configuration",
-  "keywords": ["koa", "router", "zod", "swagger"],
+  "keywords": [
+    "koa",
+    "router",
+    "zod",
+    "swagger"
+  ],
   "homepage": "https://github.com/vaso991/koa-router-zod-swagger#readme",
   "author": "vaso991 (https://github.com/vaso991/)",
   "license": "MIT",
@@ -30,13 +35,13 @@
     "@types/koa-bodyparser": "^4.3.10",
     "@types/koa-router": "^7.4.4",
     "@types/statuses": "^2.0.1",
-    "rimraf": "^4.1.2",
-    "typescript": "^4.9.4",
     "@typescript-eslint/eslint-plugin": "^5.39.0",
     "@typescript-eslint/parser": "^5.39.0",
     "eslint": "^8.25.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.2.1"
+    "eslint-plugin-prettier": "^4.2.1",
+    "rimraf": "^4.1.2",
+    "typescript": "^4.9.4"
   },
   "optionalDependencies": {
     "koa-bodyparser": "^4.3.0"
