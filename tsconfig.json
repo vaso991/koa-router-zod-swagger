@@ -1,0 +1,31 @@
+{
+    "version": "2.0.2",
+    "compilerOptions": {
+      "outDir": "./dist",
+      "lib": ["es5", "es6"],
+      "target": "es6",
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "allowJs": true,
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "declaration": true,
+      "isolatedModules": false,
+      "suppressImplicitAnyIndexErrors": false,
+      "noImplicitAny": true,
+      "strict": true,
+      "strictPropertyInitialization": false,
+      "allowSyntheticDefaultImports": true,
+      "newLine": "LF",
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "typeRoots": [
+        "./node_modules/@types"
+      ]
+    },
+    "include": ["lib/*"],
+    "exclude": ["node_modules"],
+    "linterOptions": {
+      "exclude": []
+    }
+  }
