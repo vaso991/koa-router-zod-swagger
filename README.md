@@ -30,6 +30,9 @@ const router = new KoaRouter();
 
 ```js
 const RouterSchema: ZodValidatorProps = {
+  summary: 'Make test post request',
+  description: `Make [API](https://en.wikipedia.org/wiki/API) Request`,
+  responseCodes: [200, 201, 400, 500],
   query: z.object({
     queryParam: z.string(),
   }),

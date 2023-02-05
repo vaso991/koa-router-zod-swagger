@@ -11,6 +11,9 @@ app.use(KoaBodyParser());
 const router = new KoaRouter();
 
 const RouterSchema = {
+  summary: 'Make test post request',
+  description: `Make [API](https://en.wikipedia.org/wiki/API) Request`,
+  responseCodes: [200, 201, 400, 500],
   body: z.object({
     string: z.string().optional(),
     uuid: z.string().uuid(),

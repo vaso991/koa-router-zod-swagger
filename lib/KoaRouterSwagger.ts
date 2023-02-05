@@ -43,6 +43,8 @@ type IObjectKeys = {
 };
 
 type PathParametersResponse = {
+  summary?: string;
+  description?: string;
   parameters: Parameter[];
   responses: IObjectKeys;
   tags?: [string];
@@ -54,7 +56,7 @@ interface IPathObject {
   };
 }
 
-const DEFAULT_RESPONSES = [200, 400];
+const DEFAULT_RESPONSES = [200, 201, 400, 500];
 
 const ALLOWED_METHODS = ['get', 'put', 'patch', 'post', 'delete'];
 
@@ -93,9 +95,10 @@ const GeneratePathParameters = (
   method: string,
   stack: Router.Layer,
 ): PathParametersResponse => {
+  const schema = FindSchemaInStack(stack);
   const options: PathParametersResponse = {
     parameters: [],
-    responses: DEFAULT_RESPONSES.reduce((map: IObjectKeys, code) => {
+    responses: (schema?.responseCodes ?? DEFAULT_RESPONSES).reduce((map: IObjectKeys, code) => {
       map[code] = { description: statuses(code) };
       return map;
     }, {}),
@@ -103,8 +106,10 @@ const GeneratePathParameters = (
   if (stack.opts?.prefix) {
     options.tags = [stack.opts.prefix];
   }
-  const schema = FindSchemaInStack(stack);
-  FillSchemeParameters(options.parameters, schema);
+  options.summary = schema?.summary;
+  options.description = schema?.description;
+  
+  FillSchemaParameters(options.parameters, schema);
   return options;
 };
 
@@ -122,7 +127,7 @@ function FindSchemaInStack(
   }
 }
 
-function FillSchemeParameters(
+function FillSchemaParameters(
   parameters: Parameter[],
   schema?: ZodValidatorProps,
 ) {

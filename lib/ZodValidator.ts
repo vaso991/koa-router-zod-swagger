@@ -2,6 +2,9 @@ import { Context, Next } from 'koa';
 import { AnyZodObject } from 'zod';
 
 export interface ZodValidatorProps {
+  summary?: string;
+  description?: string;
+  responseCodes?: number[];
   query?: AnyZodObject;
   params?: AnyZodObject;
   header: AnyZodObject;
