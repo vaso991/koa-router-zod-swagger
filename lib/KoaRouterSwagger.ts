@@ -12,20 +12,22 @@ import {
   ZodArray,
   ZodOptional,
   ZodOptionalDef,
+  ZodDate,
 } from 'zod';
 import { ZodValidatorProps } from './ZodValidator';
 
 type BodyProperty = {
-  type: string | null,
-  required?: string[],
-  properties?: BodyProperties,
+  type: string | null;
+  format?: string | null;
+  required?: string[];
+  properties?: BodyProperties;
   items?: {
-    type: string | null
-  }
-}
+    type: string | null;
+  };
+};
 type BodyProperties = {
-  [key: string]: BodyProperty
-}
+  [key: string]: BodyProperty;
+};
 
 type Parameter = {
   in: string;
@@ -33,7 +35,7 @@ type Parameter = {
   description?: string;
   type?: string | null;
   required?: boolean;
-  schema?: BodyProperty
+  schema?: BodyProperty;
 };
 
 type IObjectKeys = {
@@ -61,7 +63,7 @@ const KoaRouterSwagger = (
   uiConfig: Partial<KoaSwaggerUiOptions>,
 ) => {
   const paths = MapAllMethods(router);
-  
+
   return CreateKoaSwagger(paths, router, uiConfig);
 };
 
@@ -78,7 +80,7 @@ const MapAllMethods = (router: Router) => {
     const specs = GeneratePathParameters(method, stack);
 
     path = FormatPath(path, specs);
-    
+
     if (!paths[path]) {
       paths[path] = {};
     }
@@ -161,12 +163,13 @@ const FillSchemaRequestBody = (
   for (const key in object.shape) {
     const zodType = object.shape[key] as ZodType;
     properties[key] = {
-      type: GetTypeFromZodType(zodType)
+      type: GetTypeFromZodType(zodType),
+      format: GetFormatFromZodType(zodType)
     };
     if (zodType instanceof ZodArray) {
       properties[key].items = {
-        type: GetTypeFromZodType(zodType.element)
-      }
+        type: GetTypeFromZodType(zodType.element),
+      };
     }
     const isRequiredFlag = !zodType.isOptional();
     if (isRequiredFlag) {
@@ -188,15 +191,16 @@ const FillSchemaRequestBody = (
       schema: {
         type: 'object',
         required: required,
-        properties: properties
-      }
+        properties: properties,
+      },
     });
   }
 };
 
-const GetTypeFromZodType = (type: ZodType): string | null => {
+const GetTypeFromZodType = (type: ZodType): string => {
   switch (type.constructor) {
     case ZodString:
+    case ZodDate:
       return 'string';
     case ZodNumber:
       return 'number';
@@ -210,6 +214,28 @@ const GetTypeFromZodType = (type: ZodType): string | null => {
       return 'object';
     case ZodOptional:
       return GetTypeFromZodType((type._def as ZodOptionalDef).innerType);
+  }
+  return 'string';
+};
+
+const GetFormatFromZodType = (type: ZodType): string | null => {
+  if (type instanceof ZodString) {
+    if (type.isUUID) {
+      return 'uuid';
+    }
+    if (type.isEmail) {
+      return 'email';
+    }
+    if (type.isURL) {
+      return 'uri';
+    }
+    if (type.isDatetime) {
+      return 'date-time';
+    }
+  }
+  switch (type.constructor) {
+    case ZodDate:
+      return 'date-time';
   }
   return null;
 };

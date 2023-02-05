@@ -13,13 +13,19 @@ const router = new KoaRouter();
 const RouterSchema = {
   body: z.object({
     string: z.string().optional(),
+    uuid: z.string().uuid(),
+    email: z.string().email(),
+    url: z.string().url(),
+    stringDateTime: z.string().datetime(),
     number: z.number(),
     boolean: z.boolean(),
     object: z.object({
       element1: z.string(),
       element2: z.string()
     }),
-    array: z.array(z.string())
+    array: z.array(z.string()),
+    number_array: z.array(z.number()),
+    date: z.coerce.date()
   }),
   params: z.object({
     param1: z.string(),
@@ -37,10 +43,11 @@ router.post('/test/:param1', ZodValidator(RouterSchema), (ctx) => {
   };
 });
 
-router.get(
-  '/docs',
+app.use(
   KoaRouterSwagger(router, {
-    routePrefix: false,
+    routePrefix: '/docs',
+    exposeSpec: true,
+    specPrefix: '/docs/spec',
     title: 'Test Api',
     swaggerOptions: {
       spec: {
