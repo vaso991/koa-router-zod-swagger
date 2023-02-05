@@ -4,6 +4,7 @@ import { AnyZodObject } from 'zod';
 export interface ZodValidatorProps {
   query?: AnyZodObject;
   params?: AnyZodObject;
+  header: AnyZodObject;
   body?: AnyZodObject;
 }
 
@@ -14,6 +15,9 @@ export const ZodValidator = (props: ZodValidatorProps) => {
     }
     if (props.params && 'params' in ctx) {
       await props.params.parseAsync(ctx.params);
+    }
+    if (props.header) {
+      await props.header.parseAsync(ctx.request.header);
     }
     if (props.body && 'body' in ctx.request) {
       await props.body.parseAsync(ctx.request.body);

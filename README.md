@@ -40,6 +40,9 @@ const RouterSchema: ZodValidatorProps = {
   params: z.object({
     param1: z.string(),
   }),
+  header: z.object({
+    'user-agent': z.string()
+  })
 };
 ```
 ### Validate Input

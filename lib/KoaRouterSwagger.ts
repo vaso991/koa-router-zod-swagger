@@ -125,9 +125,10 @@ function FillSchemeParameters(
   schema?: ZodValidatorProps,
 ) {
   if (schema) {
-    schema.body && FillSchemaRequestBody(parameters, schema.body);
-    schema.query && FillSchemaParameter(parameters, schema.query, 'query');
     schema.params && FillSchemaParameter(parameters, schema.params, 'path');
+    schema.query && FillSchemaParameter(parameters, schema.query, 'query');
+    schema.header && FillSchemaParameter(parameters, schema.header, 'header');
+    schema.body && FillSchemaRequestBody(parameters, schema.body);
   }
 }
 const FillSchemaParameter = (

@@ -24,6 +24,9 @@ const RouterSchema = {
   params: z.object({
     param1: z.string(),
   }),
+  header: z.object({
+    'user-agent': z.string()
+  })
 };
 
 router.post('/test/:param1', ZodValidator(RouterSchema), (ctx) => {
