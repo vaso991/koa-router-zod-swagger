@@ -7,7 +7,7 @@ export interface ZodValidatorProps {
   responseCodes?: number[];
   query?: AnyZodObject;
   params?: AnyZodObject;
-  header: AnyZodObject;
+  header?: AnyZodObject;
   body?: AnyZodObject;
 }
 
