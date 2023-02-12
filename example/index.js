@@ -1,5 +1,6 @@
 const Koa = require('koa');
 const KoaRouter = require('koa-router');
+const KoaJsonError = require('koa-json-error');
 const { z } = require('zod');
 const KoaBodyParser = require('koa-bodyparser');
 const { ZodValidator, ZodValidatorProps, KoaRouterSwagger } = require('../dist');
@@ -7,6 +8,8 @@ const { ZodValidator, ZodValidatorProps, KoaRouterSwagger } = require('../dist')
 const app = new Koa();
 
 app.use(KoaBodyParser());
+
+app.use(KoaJsonError());
 
 const router = new KoaRouter();
 
@@ -37,6 +40,13 @@ const RouterSchema = {
     'user-agent': z.string()
   })
 };
+
+router.get('/test', ZodValidator({
+  query: z.object({
+    ar: z.array(z.string()),
+    num: z.coerce.number().optional()
+  }).partial()
+}), (ctx) => ctx.body = ctx.query);
 
 router.post('/test/:param1', ZodValidator(RouterSchema), (ctx) => {
   ctx.body = {
