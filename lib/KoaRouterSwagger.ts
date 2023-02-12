@@ -165,6 +165,7 @@ const FillSchemaParameter = (
         type: GetTypeFromZodType(_zodType.element).type
       }
     }
+    parameters.push(parameter);
   }
 };
 const FillSchemaRequestBody = (
