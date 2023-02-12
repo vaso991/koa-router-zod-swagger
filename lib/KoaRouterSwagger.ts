@@ -166,7 +166,6 @@ const FillSchemaParameter = (
       }
     }
   }
-  console.log(parameters);
 };
 const FillSchemaRequestBody = (
   parameters: Parameter[],
