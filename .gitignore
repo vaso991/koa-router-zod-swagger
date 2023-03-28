@@ -13,3 +13,6 @@ yarn-error.log*
 
 # Node modules
 node_modules/
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
