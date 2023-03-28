@@ -3,7 +3,7 @@ const KoaRouter = require('koa-router');
 const KoaJsonError = require('koa-json-error');
 const { z } = require('zod');
 const KoaBodyParser = require('koa-bodyparser');
-const { ZodValidator, ZodValidatorProps, KoaRouterSwagger } = require('../dist');
+const { ZodValidator, KoaRouterSwagger } = require('../dist');
 
 const app = new Koa();
 
