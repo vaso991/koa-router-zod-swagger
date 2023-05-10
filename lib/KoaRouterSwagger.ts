@@ -122,7 +122,10 @@ function FindSchemaInStack(
   }
   if ('stack' in stack) {
     for (const stackItem of stack.stack) {
-      return FindSchemaInStack(stackItem);
+      const foundStackItem = FindSchemaInStack(stackItem);
+      if (foundStackItem) {
+        return foundStackItem;
+      }
     }
   }
 }
