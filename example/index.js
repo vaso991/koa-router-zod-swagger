@@ -13,6 +13,16 @@ app.use(KoaJsonError());
 
 const router = new KoaRouter();
 
+const effect = {
+  body: z.object({
+    password: z.string(),
+    confirm: z.string()
+  }).refine(data => data.password === data.confirm, {
+    message: "Passwords don't match",
+    path: ["confirm"],
+  })
+};
+
 const RouterSchema = {
   summary: 'Make test post request',
   description: `Make [API](https://en.wikipedia.org/wiki/API) Request`,
@@ -56,6 +66,10 @@ router.post('/test/:param1', ZodValidator(RouterSchema), (ctx) => {
     body: ctx.request.body,
   };
 });
+
+router.post('/effect', ZodValidator(effect), (ctx) => {
+  ctx.body = ctx.request.body;
+})
 
 app.use(
   KoaRouterSwagger(router, {

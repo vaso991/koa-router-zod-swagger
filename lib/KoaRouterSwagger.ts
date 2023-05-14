@@ -13,6 +13,7 @@ import {
   ZodOptional,
   ZodOptionalDef,
   ZodDate,
+  ZodEffects,
 } from 'zod';
 import { ZodValidatorProps } from './ZodValidator';
 
@@ -158,9 +159,12 @@ function FillSchemaParameters(
 }
 const FillSchemaParameter = (
   parameters: Parameter[],
-  object: AnyZodObject,
+  object: AnyZodObject | ZodEffects<AnyZodObject>,
   type: string,
 ) => {
+  if (object instanceof ZodEffects) {
+    object = object.innerType();
+  }
   for (const key in object.shape) {
     const zodType = object.shape[key] as ZodType;
     if (zodType instanceof ZodObject) {
@@ -188,12 +192,15 @@ const FillSchemaParameter = (
 };
 const FillSchemaRequestBody = (
   options: PathParametersResponse,
-  object: AnyZodObject,
+  object: AnyZodObject | ZodEffects<AnyZodObject>,
   parentObject?: SchemaType,
 ) => {
   const bodySchema: SchemaType = {
     type: 'object',
   };
+  if (object instanceof ZodEffects) {
+    object = object.innerType();
+  }
   for (const key in object.shape) {
     const zodType = object.shape[key] as ZodType;
     const { type: _type } = GetTypeFromZodType(zodType);

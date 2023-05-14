@@ -1,14 +1,14 @@
 import { Context, Next } from 'koa';
-import { AnyZodObject } from 'zod';
+import { AnyZodObject, ZodEffects } from 'zod';
 
 export interface ZodValidatorProps {
   summary?: string;
   description?: string;
   responseCodes?: number[];
-  query?: AnyZodObject;
-  params?: AnyZodObject;
-  header?: AnyZodObject;
-  body?: AnyZodObject;
+  query?: AnyZodObject | ZodEffects<AnyZodObject>;
+  params?: AnyZodObject | ZodEffects<AnyZodObject>;
+  header?: AnyZodObject | ZodEffects<AnyZodObject>;
+  body?: AnyZodObject | ZodEffects<AnyZodObject>;
 }
 
 export const ZodValidator = (props: ZodValidatorProps) => {
