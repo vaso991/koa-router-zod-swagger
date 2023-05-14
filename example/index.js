@@ -27,7 +27,8 @@ const RouterSchema = {
     boolean: z.boolean(),
     object: z.object({
       element1: z.string(),
-      element2: z.string()
+      element2: z.string(),
+      array3: z.array(z.string())
     }),
     array: z.array(z.string()),
     number_array: z.array(z.number()),
