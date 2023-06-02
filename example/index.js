@@ -26,7 +26,6 @@ const effect = {
 const RouterSchema = {
   summary: 'Make test post request',
   description: `Make [API](https://en.wikipedia.org/wiki/API) Request`,
-  responseCodes: [200, 201, 400, 500],
   body: z.object({
     string: z.string().optional(),
     uuid: z.string().uuid(),
@@ -69,6 +68,19 @@ router.post('/test/:param1', ZodValidator(RouterSchema), (ctx) => {
 
 router.post('/effect', ZodValidator(effect), (ctx) => {
   ctx.body = ctx.request.body;
+})
+
+router.get('/response', ZodValidator({
+  response: {
+    description: 'Response returned successfully',
+    validate: true,
+    possibleStatusCodes: [201, 300, 401],
+    body: z.object({
+      test: z.boolean()
+    })
+  }
+}), (ctx) => {
+  ctx.body = { test: false }
 })
 
 app.use(

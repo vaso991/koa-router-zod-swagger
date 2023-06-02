@@ -1,19 +1,21 @@
+import { HTTP_STATUS_CODES } from './utils/Constants';
+import { AnyZodObject } from 'zod';
 
 export type SchemaType = {
   type: string | null;
   format?: string | null;
   required?: string[];
-  properties?: BodyProperties;
+  properties?: BodyPropertiesType;
   items?: {
     type: string | null;
   };
 };
 
-export type BodyProperties = {
+export type BodyPropertiesType = {
   [key: string]: SchemaType;
 };
 
-export type Parameter = {
+export type ParameterType = {
   in: string;
   name: string;
   explode?: boolean;
@@ -22,29 +24,48 @@ export type Parameter = {
   schema: SchemaType;
 };
 
-export type RequestBody = {
+export type RequestBodyType = {
   content: {
     'application/json': {
-      schema: SchemaType;
+      schema?: SchemaType;
     };
   };
 };
 
-export type IObjectKeys = {
+export type ObjectKeysType = {
   [key: string]: { description: string };
 };
 
-export type PathParametersResponse = {
+export type PathParametersResponseType = {
   summary?: string;
   description?: string;
-  parameters: Parameter[];
-  requestBody?: RequestBody;
-  responses: IObjectKeys;
+  parameters: ParameterType[];
+  requestBody?: RequestBodyType;
+  responses: SwaggerResponseType;
   tags?: [string];
 };
 
-export type IPathObject = {
+export type PathObjectType = {
   [key: string]: {
-    [key: string]: PathParametersResponse;
+    [key: string]: PathParametersResponseType;
   };
+}
+
+export type HttpStatusCodesType = typeof HTTP_STATUS_CODES[number];
+export type ResponseType = {
+  description?: string,
+  validate?: boolean,
+  possibleStatusCodes?: number[],
+  body: AnyZodObject
+}
+
+export type SwaggerResponseType = {
+  [code: string]: {
+    description?: string,
+    content?: {
+      [key: 'application/json' | string] : {
+        schema?: SchemaType
+      }
+    }
+  }
 }

@@ -32,7 +32,6 @@ const router = new KoaRouter();
 const RouterSchema: ZodValidatorProps = {
   summary: 'Make test post request',
   description: `Make [API](https://en.wikipedia.org/wiki/API) Request`,
-  responseCodes: [200, 201, 400, 500],
   query: z.object({
     queryParam: z.string(),
   }),
@@ -45,10 +44,19 @@ const RouterSchema: ZodValidatorProps = {
   }),
   header: z.object({
     'user-agent': z.string()
-  })
+  }),
+  response: {
+    description: 'Response returned successfully',
+    validate: true,
+    body: z.object({
+      query: z.object(),
+      params: z.object(),
+      body: z.object()
+    })
+  }
 };
 ```
-### Validate Input
+### Validate
 ```js
 router.post('/api/:param1', ZodValidator(RouterSchema), (ctx) => {
   ctx.body = {

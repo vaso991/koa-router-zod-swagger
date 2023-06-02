@@ -1,10 +1,10 @@
-import { Parameter, PathParametersResponse, SchemaType } from '../Types';
+import { ParameterType, PathParametersResponseType, RequestBodyType, SchemaType } from '../Types';
 import { ZodValidatorProps } from '../ZodValidator';
 import { AnyZodObject, ZodArray, ZodEffects, ZodObject, ZodType } from 'zod';
 import { GetFormatFromZodType, GetTypeFromZodType } from './Zod.Utils';
 
 export const FillSchemaParameters = (
-  options: PathParametersResponse,
+  options: PathParametersResponseType,
   schema?: ZodValidatorProps,
 ) => {
   if (schema) {
@@ -14,13 +14,15 @@ export const FillSchemaParameters = (
     FillSchemaParameter(options.parameters, schema.query, 'query');
     schema.header &&
     FillSchemaParameter(options.parameters, schema.header, 'header');
-    schema.body && FillSchemaRequestBody(options, schema.body);
+    if (schema.body) {
+      options.requestBody = FillSchemaBody(schema.body);
+    }
   }
 };
 
 
 const FillSchemaParameter = (
-  parameters: Parameter[],
+  parameters: ParameterType[],
   object: AnyZodObject | ZodEffects<AnyZodObject>,
   type: string,
 ) => {
@@ -35,7 +37,7 @@ const FillSchemaParameter = (
     }
     const isRequiredFlag = !zodType.isOptional();
     const { type: _type, zodType: _zodType } = GetTypeFromZodType(zodType);
-    const parameter: Parameter = {
+    const parameter: ParameterType = {
       in: type,
       name: key,
       schema: {
@@ -52,11 +54,22 @@ const FillSchemaParameter = (
     parameters.push(parameter);
   }
 };
-const FillSchemaRequestBody = (
-  options: PathParametersResponse,
+export const FillSchemaBody = (
+  object: AnyZodObject | ZodEffects<AnyZodObject>
+): RequestBodyType | undefined => {
+  return {
+    content: {
+      'application/json': {
+        schema: GenerateSchemaBody(object),
+      },
+    },
+  };
+};
+
+export const GenerateSchemaBody = (
   object: AnyZodObject | ZodEffects<AnyZodObject>,
   parentObject?: SchemaType,
-) => {
+): SchemaType | undefined => {
   const bodySchema: SchemaType = {
     type: 'object',
   };
@@ -82,7 +95,7 @@ const FillSchemaRequestBody = (
       bodySchema.required.push(key);
     }
     if (zodType instanceof ZodObject) {
-      FillSchemaRequestBody(options, zodType, bodySchema.properties[key]);
+      GenerateSchemaBody(zodType, bodySchema.properties[key]);
     }
   }
   if (parentObject) {
@@ -90,12 +103,6 @@ const FillSchemaRequestBody = (
     parentObject.properties = bodySchema.properties;
     parentObject.type = 'object';
   } else {
-    options.requestBody = {
-      content: {
-        'application/json': {
-          schema: bodySchema,
-        },
-      },
-    };
+    return bodySchema;
   }
 };

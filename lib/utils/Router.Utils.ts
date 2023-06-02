@@ -1,11 +1,11 @@
-import { ALLOWED_METHODS, DEFAULT_RESPONSES } from './Constants';
+import { ALLOWED_METHODS } from './Constants';
 import Router from 'koa-router';
-import { IObjectKeys, IPathObject, PathParametersResponse } from '../Types';
-import statuses from 'statuses';
+import { PathObjectType, PathParametersResponseType } from '../Types';
 import { ZodValidatorProps } from '../ZodValidator';
 import { FillSchemaParameters } from './Schema.Utils';
+import { generateResponses } from './Response.Utils';
 
-const FormatPath = (path: string, specs: PathParametersResponse) => {
+const FormatPath = (path: string, specs: PathParametersResponseType) => {
   specs.parameters.forEach((param) => {
     if (param.in === 'path') {
       path = path.replace(`:${param.name}`, `{${param.name}}`);
@@ -14,7 +14,7 @@ const FormatPath = (path: string, specs: PathParametersResponse) => {
   return path;
 };
 export const MapAllMethods = (router: Router) => {
-  const paths: IPathObject = {};
+  const paths: PathObjectType = {};
   router.stack.forEach((stack: Router.Layer) => {
     let { path } = stack;
     const method = stack.methods
@@ -38,17 +38,11 @@ export const MapAllMethods = (router: Router) => {
 export const GeneratePathParameters = (
   method: string,
   stack: Router.Layer,
-): PathParametersResponse => {
+): PathParametersResponseType => {
   const schema = FindSchemaInStack(stack);
-  const options: PathParametersResponse = {
+  const options: PathParametersResponseType = {
     parameters: [],
-    responses: (schema?.responseCodes ?? DEFAULT_RESPONSES).reduce(
-      (map: IObjectKeys, code) => {
-        map[code] = { description: statuses(code) };
-        return map;
-      },
-      {},
-    ),
+    responses: generateResponses(schema),
   };
   if (stack.opts?.prefix) {
     options.tags = [stack.opts.prefix];
