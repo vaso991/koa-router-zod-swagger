@@ -16,3 +16,7 @@ node_modules/
 pnpm-lock.yaml
 yarn.lock
 package-lock.json
+
+# Ignore editos configs
+.vscode
+.idea
