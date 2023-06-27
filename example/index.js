@@ -41,6 +41,10 @@ const RouterSchema = {
     }),
     array: z.array(z.string()),
     number_array: z.array(z.number()),
+    object_array: z.array(z.object({
+      test: z.string(),
+      testNumber: z.number()
+    })),
     date: z.coerce.date()
   }),
   params: z.object({

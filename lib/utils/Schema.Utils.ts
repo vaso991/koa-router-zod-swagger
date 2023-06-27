@@ -1,4 +1,9 @@
-import { ParameterType, PathParametersResponseType, RequestBodyType, SchemaType } from '../Types';
+import {
+  ParameterType,
+  PathParametersResponseType,
+  RequestBodyType,
+  SchemaType,
+} from '../Types';
 import { ZodValidatorProps } from '../ZodValidator';
 import { AnyZodObject, ZodArray, ZodEffects, ZodObject, ZodType } from 'zod';
 import { GetFormatFromZodType, GetTypeFromZodType } from './Zod.Utils';
@@ -9,17 +14,17 @@ export const FillSchemaParameters = (
 ) => {
   if (schema) {
     schema.params &&
-    FillSchemaParameter(options.parameters, schema.params, 'path');
+      FillSchemaParameter(options.parameters, schema.params, 'path');
     schema.query &&
-    FillSchemaParameter(options.parameters, schema.query, 'query');
+      FillSchemaParameter(options.parameters, schema.query, 'query');
     schema.header &&
-    FillSchemaParameter(options.parameters, schema.header, 'header');
+      FillSchemaParameter(options.parameters, schema.header, 'header');
     if (schema.body) {
       options.requestBody = FillSchemaBody(schema.body);
     }
+    console.log(JSON.stringify(options.requestBody, null, 2));
   }
 };
-
 
 const FillSchemaParameter = (
   parameters: ParameterType[],
@@ -55,7 +60,7 @@ const FillSchemaParameter = (
   }
 };
 export const FillSchemaBody = (
-  object: AnyZodObject | ZodEffects<AnyZodObject>
+  object: AnyZodObject | ZodEffects<AnyZodObject>,
 ): RequestBodyType | undefined => {
   return {
     content: {
@@ -86,8 +91,9 @@ export const GenerateSchemaBody = (
     };
     if (zodType instanceof ZodArray) {
       bodySchema.properties[key].items = {
-        type: _type,
+        type: GetTypeFromZodType(zodType.element).type,
       };
+      GenerateSchemaBody(zodType.element, bodySchema.properties[key].items);
     }
     const isRequiredFlag = !zodType.isOptional();
     if (isRequiredFlag) {
