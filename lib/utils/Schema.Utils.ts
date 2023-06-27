@@ -22,7 +22,6 @@ export const FillSchemaParameters = (
     if (schema.body) {
       options.requestBody = FillSchemaBody(schema.body);
     }
-    console.log(JSON.stringify(options.requestBody, null, 2));
   }
 };
 
