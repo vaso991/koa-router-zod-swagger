@@ -5,7 +5,14 @@ import {
   SchemaType,
 } from '../Types';
 import { ZodValidatorProps } from '../ZodValidator';
-import { AnyZodObject, ZodArray, ZodEffects, ZodObject, ZodType } from 'zod';
+import {
+  AnyZodObject,
+  ZodArray,
+  ZodEffects,
+  ZodObject,
+  ZodType,
+  ZodUnion,
+} from 'zod';
 import { GetFormatFromZodType, GetTypeFromZodType } from './Zod.Utils';
 
 export const FillSchemaParameters = (
@@ -34,7 +41,10 @@ const FillSchemaParameter = (
     object = object.innerType();
   }
   for (const key in object.shape) {
-    const zodType = object.shape[key] as ZodType;
+    let zodType = object.shape[key] as ZodType;
+    if (zodType instanceof ZodUnion) {
+      zodType = zodType.options[0];
+    }
     if (zodType instanceof ZodObject) {
       FillSchemaParameter(parameters, zodType, type);
       continue;
