@@ -1,5 +1,5 @@
 import { HTTP_STATUS_CODES } from './utils/Constants';
-import { AnyZodObject, ZodEffects } from 'zod';
+import { AnyZodObject } from 'zod';
 
 export type SchemaType = {
   type: string | null;

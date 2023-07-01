@@ -133,7 +133,6 @@ const GenerateSchemaBodyFiles = (
   files: FileRequestObjectType,
   schema: SchemaType,
 ) => {
-  console.log(schema);
   if (!schema.properties) {
     schema.properties = {};
   }
