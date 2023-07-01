@@ -1,4 +1,5 @@
 import {
+  FileRequestObjectType,
   ParameterType,
   PathParametersResponseType,
   RequestBodyType,
@@ -27,7 +28,7 @@ export const FillSchemaParameters = (
     schema.header &&
       FillSchemaParameter(options.parameters, schema.header, 'header');
     if (schema.body) {
-      options.requestBody = FillSchemaBody(schema.body);
+      options.requestBody = FillSchemaBody(schema.body, schema.files);
     }
   }
 };
@@ -70,11 +71,18 @@ const FillSchemaParameter = (
 };
 export const FillSchemaBody = (
   object: AnyZodObject | ZodEffects<AnyZodObject>,
+  files?: FileRequestObjectType,
 ): RequestBodyType | undefined => {
+  const hasFiles = files && Object.keys(files).length > 0;
+  const contentType = hasFiles ? 'multipart/form-data' : 'application/json';
+  const schema = GenerateSchemaBody(object);
+  if (hasFiles) {
+    GenerateSchemaBodyFiles(files, schema);
+  }
   return {
     content: {
-      'application/json': {
-        schema: GenerateSchemaBody(object),
+      [contentType]: {
+        schema,
       },
     },
   };
@@ -83,7 +91,7 @@ export const FillSchemaBody = (
 export const GenerateSchemaBody = (
   object: AnyZodObject | ZodEffects<AnyZodObject>,
   parentObject?: SchemaType,
-): SchemaType | undefined => {
+): SchemaType => {
   const bodySchema: SchemaType = {
     type: 'object',
   };
@@ -117,7 +125,50 @@ export const GenerateSchemaBody = (
     parentObject.required = bodySchema.required;
     parentObject.properties = bodySchema.properties;
     parentObject.type = 'object';
-  } else {
-    return bodySchema;
   }
+  return bodySchema;
+};
+
+const GenerateSchemaBodyFiles = (
+  files: FileRequestObjectType,
+  schema: SchemaType,
+) => {
+  console.log(schema);
+  if (!schema.properties) {
+    schema.properties = {};
+  }
+  if (!schema.required) {
+    schema.required = [];
+  }
+  for (const [key, file] of Object.entries(files)) {
+    if (file === false) {
+      continue;
+    }
+    if (file === true) {
+      schema.properties[key] = {
+        type: 'string',
+        format: 'binary',
+      };
+      schema.required.push(key);
+      continue;
+    }
+    if (file.multiple) {
+      schema.properties[key] = {
+        type: 'array',
+        items: {
+          type: 'string',
+          format: 'binary',
+        },
+      };
+    } else {
+      schema.properties[key] = {
+        type: 'string',
+        format: 'binary',
+      };
+    }
+    if (file.optional !== true) {
+      schema.required.push(key);
+    }
+  }
+  return schema;
 };

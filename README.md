@@ -39,6 +39,21 @@ const RouterSchema: ZodValidatorProps = {
     bodyParamString: z.string(),
     bodyParamNumber: z.number(),
   }),
+  files: {
+    file1: true,
+    multipleFiles: {
+      multiple: true
+    },
+    optionalFile: {
+      optional: true
+    }
+  },
+  filesValidator: z.object({
+    file1: z.object({ // formidable.File object
+      size: z.number().min(5 * 1000).max(7 * 1000), // Min 5KB, Max 7KB.
+      mimetype: z.enum(['image/png'])
+    })
+  }),
   params: z.object({
     param1: z.string(),
   }),

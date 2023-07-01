@@ -2,12 +2,14 @@ const Koa = require('koa');
 const KoaRouter = require('koa-router');
 const KoaJsonError = require('koa-json-error');
 const { z } = require('zod');
-const KoaBodyParser = require('koa-bodyparser');
+const { koaBody } = require('koa-body');
 const { ZodValidator, KoaRouterSwagger } = require('../dist');
 
 const app = new Koa();
 
-app.use(KoaBodyParser());
+app.use(koaBody({
+  multipart: true
+}));
 
 app.use(KoaJsonError());
 
@@ -85,6 +87,30 @@ router.get('/response', ZodValidator({
   }
 }), (ctx) => {
   ctx.body = { test: false }
+})
+
+router.post('/files', ZodValidator({
+  body: z.object({
+    field: z.string()
+  }),
+  files: {
+    file: true,
+    multipleFiles: {
+      multiple: true
+    },
+    optionalFile: {
+      optional: true
+    }
+  },
+  filesValidator: z.object({
+    file: z.object({
+      size: z.number().min(5 * 1000).max(7 * 1000),
+      mimetype: z.enum(['text/html'])
+    })
+  })
+}), ctx => ctx.body = {
+  body: ctx.request.body,
+  files: ctx.request.files
 })
 
 app.use(

@@ -1,6 +1,6 @@
 import { Context, Next } from 'koa';
 import { AnyZodObject, ZodEffects } from 'zod';
-import { ResponseType } from './Types';
+import { FileRequestObjectType, ResponseType } from './Types';
 
 export interface ZodValidatorProps {
   summary?: string;
@@ -9,6 +9,8 @@ export interface ZodValidatorProps {
   params?: AnyZodObject | ZodEffects<AnyZodObject>;
   header?: AnyZodObject | ZodEffects<AnyZodObject>;
   body?: AnyZodObject | ZodEffects<AnyZodObject>;
+  files?: FileRequestObjectType;
+  filesValidator?: AnyZodObject | ZodEffects<AnyZodObject>;
   response?: ResponseType;
 }
 
@@ -25,6 +27,9 @@ export const ZodValidator = (props: ZodValidatorProps) => {
     }
     if (props.body && 'body' in ctx.request) {
       await props.body.parseAsync(ctx.request.body);
+    }
+    if (props.filesValidator && 'files' in ctx.request) {
+      await props.filesValidator.parseAsync(ctx.request.files);
     }
     if (props.response?.validate) {
       return next().then(async () => {

@@ -1,6 +1,6 @@
 {
   "name": "koa-router-zod-swagger",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "Generate swagger specs and host ui based on koa-router and zod configuration",
   "keywords": [
     "koa",
@@ -18,11 +18,14 @@
   ],
   "scripts": {
     "build": "npm run clean && tsc",
+    "watch:ts": "tsc -w",
+    "watch:example": "node --watch example/index.js",
     "clean": "rimraf dist",
     "prepack": "npm run build",
     "test": "eslint ."
   },
   "peerDependencies": {
+    "formidable": "^3.5.0",
     "koa": "^2.14.2",
     "koa-json-error": "^3.1.2",
     "koa-router": "^12.0.0"
@@ -34,7 +37,6 @@
   },
   "devDependencies": {
     "@types/koa": "^2.13.6",
-    "@types/koa-bodyparser": "^4.3.10",
     "@types/koa-router": "^7.4.4",
     "@types/node": "^20.3.2",
     "@types/statuses": "^2.0.1",
@@ -47,6 +49,6 @@
     "typescript": "^5.0.4"
   },
   "optionalDependencies": {
-    "koa-bodyparser": "^4.3.0"
+    "koa-body": "^6.0.1"
   }
 }
