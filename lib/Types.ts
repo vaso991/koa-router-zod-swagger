@@ -1,20 +1,15 @@
+import { JsonSchema7Type } from 'zod-to-json-schema/src/parseDef';
 import { HTTP_STATUS_CODES } from './utils/Constants';
 import { AnyZodObject } from 'zod';
+import { JsonSchema7ObjectType } from 'zod-to-json-schema/src/parsers/object';
 
-export type SchemaType = {
-  type: string | null;
-  format?: string | null;
-  required?: string[];
-  properties?: BodyPropertiesType;
-  items?: {
-    type: string | null;
-    format?: string | null;
-  };
-};
-
-export type BodyPropertiesType = {
-  [key: string]: SchemaType;
-};
+export type JsonSchemaType =
+  | JsonSchema7ObjectType
+  | {
+      properties?: Record<string, JsonSchemaType>;
+      additionalProperties?: boolean | JsonSchemaType;
+      required?: string[];
+    };
 
 export type ParameterType = {
   in: string;
@@ -22,7 +17,7 @@ export type ParameterType = {
   explode?: boolean;
   description?: string;
   required?: boolean;
-  schema: SchemaType;
+  schema: JsonSchema7Type;
 };
 
 type RequestType = 'application/json' | 'multipart/form-data';
@@ -32,14 +27,10 @@ export type RequestBodyType = {
     Record<
       RequestType,
       {
-        schema?: SchemaType;
+        schema?: JsonSchemaType;
       }
     >
   >;
-};
-
-export type ObjectKeysType = {
-  [key: string]: { description: string };
 };
 
 export type PathParametersResponseType = {
@@ -70,7 +61,7 @@ export type SwaggerResponseType = {
     description?: string;
     content?: {
       [key: 'application/json' | string]: {
-        schema?: SchemaType;
+        schema?: JsonSchema7Type;
       };
     };
   };

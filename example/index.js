@@ -17,8 +17,8 @@ const router = new KoaRouter();
 
 const effect = {
   body: z.object({
-    password: z.string(),
-    confirm: z.string()
+    password: z.string().describe('User password'),
+    confirm: z.string().describe('Repeat user password')
   }).refine(data => data.password === data.confirm, {
     message: "Passwords don't match",
     path: ["confirm"],
@@ -50,7 +50,7 @@ const RouterSchema = {
     date: z.coerce.date()
   }),
   params: z.object({
-    param1: z.string(),
+    param1: z.string().describe('test param'),
   }),
   header: z.object({
     'user-agent': z.string()

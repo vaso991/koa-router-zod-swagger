@@ -1,6 +1,6 @@
 {
   "name": "koa-router-zod-swagger",
-  "version": "1.0.20",
+  "version": "1.1.0",
   "description": "Generate swagger specs and host ui based on koa-router and zod configuration",
   "keywords": [
     "koa",
@@ -25,7 +25,6 @@
     "test": "eslint ."
   },
   "peerDependencies": {
-    "formidable": "^3.5.0",
     "koa": "^2.14.2",
     "koa-json-error": "^3.1.2",
     "koa-router": "^12.0.0"
@@ -33,7 +32,8 @@
   "dependencies": {
     "koa2-swagger-ui": "^5.7.0",
     "statuses": "^2.0.1",
-    "zod": "^3.20.2"
+    "zod": "^3.20.2",
+    "zod-to-json-schema": "^3.21.3"
   },
   "devDependencies": {
     "@types/koa": "^2.13.6",
