@@ -1,7 +1,12 @@
 import { JsonSchema7Type } from 'zod-to-json-schema/src/parseDef';
 import { HTTP_STATUS_CODES } from './utils/Constants';
-import { AnyZodObject } from 'zod';
+import { AnyZodObject, ZodEffects, ZodSchema } from 'zod';
 import { JsonSchema7ObjectType } from 'zod-to-json-schema/src/parsers/object';
+import { AnySchema } from 'joi';
+
+export type AnyZodValidator = ZodSchema;
+export type AnyJoiValidator = AnySchema;
+export type AnyValidator = AnyZodValidator | AnyJoiValidator;
 
 export type JsonSchemaType =
   | JsonSchema7ObjectType

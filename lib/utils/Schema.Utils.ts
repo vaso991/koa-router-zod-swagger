@@ -1,4 +1,6 @@
 import {
+  AnyValidator,
+  AnyZodValidator,
   FileRequestObjectType,
   JsonSchemaType,
   ParameterType,
@@ -8,6 +10,8 @@ import {
 import { ZodValidatorProps } from '../ZodValidator';
 import { AnyZodObject, ZodEffects } from 'zod';
 import { zodToJsonSchema } from 'zod-to-json-schema';
+import { } from 'joi-to-json-schema';
+import { VALIDATOR_TYPES, getValidatorType } from './Validator.Utils';
 
 export const FillSchemaParameters = (
   options: PathParametersResponseType,
@@ -28,10 +32,11 @@ export const FillSchemaParameters = (
 
 const FillSchemaParameter = (
   parameters: ParameterType[],
-  object: AnyZodObject | ZodEffects<AnyZodObject>,
+  object: AnyValidator,
   type: string,
 ) => {
-  const schema = zodToJsonSchema(object) as JsonSchemaType;
+  const validatorType = getValidatorType(object);
+  const schema = validatorType === VALIDATOR_TYPES.ZOD ? zodToJsonSchema((object as AnyZodValidator)) as JsonSchemaType : ;
   if (schema.properties) {
     for (const [key, zodDesc] of Object.entries(schema.properties)) {
       const parameter: ParameterType = {

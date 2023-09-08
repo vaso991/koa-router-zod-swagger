@@ -30,6 +30,8 @@
     "koa-router": "^12.0.0"
   },
   "dependencies": {
+    "joi": "^17.9.2",
+    "joi-to-json-schema": "^5.1.0",
     "koa2-swagger-ui": "^5.7.0",
     "statuses": "^2.0.1",
     "zod": "^3.20.2",
