@@ -33,7 +33,7 @@
     "koa2-swagger-ui": "^5.7.0",
     "statuses": "^2.0.1",
     "zod": "^3.20.2",
-    "zod-to-json-schema": "^3.21.3"
+    "zod-to-json-schema": "^3.22.3"
   },
   "devDependencies": {
     "@types/koa": "^2.13.6",

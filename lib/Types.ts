@@ -1,7 +1,6 @@
-import { JsonSchema7Type } from 'zod-to-json-schema/src/parseDef';
 import { HTTP_STATUS_CODES } from './utils/Constants';
 import { AnyZodObject } from 'zod';
-import { JsonSchema7ObjectType } from 'zod-to-json-schema/src/parsers/object';
+import { JsonSchema7ObjectType, JsonSchema7Type } from 'zod-to-json-schema';
 
 export type JsonSchemaType =
   | JsonSchema7ObjectType
