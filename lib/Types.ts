@@ -50,10 +50,17 @@ export type PathObjectType = {
 export type HttpStatusCodesType = (typeof HTTP_STATUS_CODES)[number];
 export type ResponseType = {
   description?: string;
-  validate?: boolean;
   possibleStatusCodes?: number[];
-  body: AnyZodObject;
-};
+} & (
+  | {
+      validate: true;
+      body: AnyZodObject;
+    }
+  | {
+      validate?: false;
+      body?: AnyZodObject;
+    }
+);
 
 export type SwaggerResponseType = {
   [code: string]: {
