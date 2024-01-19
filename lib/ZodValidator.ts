@@ -33,9 +33,7 @@ export const ZodValidator = (props: ZodValidatorProps) => {
     }
     if (props.response?.validate) {
       return next().then(async () => {
-        if (props.response) {
-          await props.response.body.parseAsync(ctx.body);
-        }
+        await props.response!.body!.parseAsync(ctx.body);
       });
     } else {
       return next();
