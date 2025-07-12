@@ -21,7 +21,10 @@ export const FillSchemaParameters = (
     validatorProps.header &&
       FillSchemaParameter(options.parameters, validatorProps.header, 'header');
     if (validatorProps.body) {
-      options.requestBody = FillSchemaBody(validatorProps.body, validatorProps.files);
+      options.requestBody = FillSchemaBody(
+        validatorProps.body,
+        validatorProps.files,
+      );
     }
   }
 };
@@ -32,7 +35,7 @@ const FillSchemaParameter = (
   type: string,
 ) => {
   const schema = zodToJsonSchema(object, {
-    target: 'openApi3'
+    target: 'openApi3',
   }) as JsonSchemaType;
   if (schema.properties) {
     for (const [key, zodDesc] of Object.entries(schema.properties)) {
@@ -54,7 +57,7 @@ export const FillSchemaBody = (
   const hasFiles = files && Object.keys(files).length > 0;
   const contentType = hasFiles ? 'multipart/form-data' : 'application/json';
   const schema = zodToJsonSchema(zodSchema, {
-    target: 'openApi3'
+    target: 'openApi3',
   }) as JsonSchemaType;
 
   if (hasFiles) {

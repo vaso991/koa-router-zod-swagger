@@ -23,7 +23,7 @@ export const generateResponses = (
     response[responseStatusCodes[0]].content = {
       'application/json': {
         schema: zodToJsonSchema(validatorProps.response.body, {
-          target: 'openApi3'
+          target: 'openApi3',
         }) as JsonSchemaType,
       },
     };

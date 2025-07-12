@@ -54,7 +54,6 @@ export const GeneratePathParameters = (
   return options;
 };
 
-
 const FindSchemaInStack = (
   stack: Router.Layer | Router.IMiddleware,
 ): ZodValidatorProps | undefined => {
