@@ -1,13 +1,13 @@
 import { ZodValidatorProps } from '../ZodValidator';
-import { SwaggerResponseType } from '../Types';
+import { JsonSchemaType, SwaggerResponseType } from '../Types';
 import { DEFAULT_RESPONSES_CODES } from './Constants';
 import statuses from 'statuses';
 import zodToJsonSchema from 'zod-to-json-schema';
 export const generateResponses = (
-  schema?: ZodValidatorProps,
+  validatorProps?: ZodValidatorProps,
 ): SwaggerResponseType => {
   const responseStatusCodes =
-    schema?.response?.possibleStatusCodes || DEFAULT_RESPONSES_CODES;
+    validatorProps?.response?.possibleStatusCodes || DEFAULT_RESPONSES_CODES;
   const response = responseStatusCodes.reduce(
     (map: SwaggerResponseType, code) => {
       map[code] = { description: statuses(code) };
@@ -15,14 +15,16 @@ export const generateResponses = (
     },
     {},
   );
-  if (schema?.response?.description) {
+  if (validatorProps?.response?.description) {
     response[responseStatusCodes[0]].description =
-      schema?.response?.description;
+      validatorProps?.response?.description;
   }
-  if (schema?.response?.body) {
+  if (validatorProps?.response?.body) {
     response[responseStatusCodes[0]].content = {
       'application/json': {
-        schema: zodToJsonSchema(schema.response.body),
+        schema: zodToJsonSchema(validatorProps.response.body, {
+          target: 'openApi3'
+        }) as JsonSchemaType,
       },
     };
   }

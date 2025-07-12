@@ -11,17 +11,17 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 
 export const FillSchemaParameters = (
   options: PathParametersResponseType,
-  schema?: ZodValidatorProps,
+  validatorProps?: ZodValidatorProps,
 ) => {
-  if (schema) {
-    schema.params &&
-      FillSchemaParameter(options.parameters, schema.params, 'path');
-    schema.query &&
-      FillSchemaParameter(options.parameters, schema.query, 'query');
-    schema.header &&
-      FillSchemaParameter(options.parameters, schema.header, 'header');
-    if (schema.body) {
-      options.requestBody = FillSchemaBody(schema.body, schema.files);
+  if (validatorProps) {
+    validatorProps.params &&
+      FillSchemaParameter(options.parameters, validatorProps.params, 'path');
+    validatorProps.query &&
+      FillSchemaParameter(options.parameters, validatorProps.query, 'query');
+    validatorProps.header &&
+      FillSchemaParameter(options.parameters, validatorProps.header, 'header');
+    if (validatorProps.body) {
+      options.requestBody = FillSchemaBody(validatorProps.body, validatorProps.files);
     }
   }
 };
@@ -31,7 +31,9 @@ const FillSchemaParameter = (
   object: AnyZodObject | ZodEffects<AnyZodObject>,
   type: string,
 ) => {
-  const schema = zodToJsonSchema(object) as JsonSchemaType;
+  const schema = zodToJsonSchema(object, {
+    target: 'openApi3'
+  }) as JsonSchemaType;
   if (schema.properties) {
     for (const [key, zodDesc] of Object.entries(schema.properties)) {
       const parameter: ParameterType = {
@@ -46,12 +48,14 @@ const FillSchemaParameter = (
   return parameters;
 };
 export const FillSchemaBody = (
-  object: AnyZodObject | ZodEffects<AnyZodObject>,
+  zodSchema: AnyZodObject | ZodEffects<AnyZodObject>,
   files?: FileRequestObjectType,
 ): RequestBodyType | undefined => {
   const hasFiles = files && Object.keys(files).length > 0;
   const contentType = hasFiles ? 'multipart/form-data' : 'application/json';
-  const schema = zodToJsonSchema(object) as JsonSchemaType;
+  const schema = zodToJsonSchema(zodSchema, {
+    target: 'openApi3'
+  }) as JsonSchemaType;
 
   if (hasFiles) {
     GenerateSchemaBodyFiles(files, schema);

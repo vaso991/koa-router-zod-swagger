@@ -67,7 +67,7 @@ export type SwaggerResponseType = {
     description?: string;
     content?: {
       [key: 'application/json' | string]: {
-        schema?: JsonSchema7Type;
+        schema?: JsonSchemaType;
       };
     };
   };
