@@ -34,9 +34,7 @@ const FillSchemaParameter = (
   object: AnyZodObject | ZodEffects<AnyZodObject>,
   type: string,
 ) => {
-  const schema = zodToJsonSchema(object, {
-    target: 'openApi3',
-  }) as JsonSchemaType;
+  const schema = zodToJsonSchema(object) as JsonSchemaType;
   if (schema.properties) {
     for (const [key, zodDesc] of Object.entries(schema.properties)) {
       const parameter: ParameterType = {
@@ -56,9 +54,7 @@ export const FillSchemaBody = (
 ): RequestBodyType | undefined => {
   const hasFiles = files && Object.keys(files).length > 0;
   const contentType = hasFiles ? 'multipart/form-data' : 'application/json';
-  const schema = zodToJsonSchema(zodSchema, {
-    target: 'openApi3',
-  }) as JsonSchemaType;
+  const schema = zodToJsonSchema(zodSchema) as JsonSchemaType;
 
   if (hasFiles) {
     GenerateSchemaBodyFiles(files, schema);
