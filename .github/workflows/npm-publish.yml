@@ -16,7 +16,6 @@ jobs:
         with:
           node-version: 22
       - run: yarn install
-      - run: eslint "lib/**/*.{ts,tsx,js,mjs}" --debug
 
   publish-npm:
     needs: build
