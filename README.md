@@ -11,7 +11,7 @@ $ yarn add koa-router-zod-swagger zod
 
 $ pnpm install koa-router-zod-swagger zod
 ```
-> Uses [`Zod`](https://github.com/colinhacks/zod), [`@koa/router`](https://github.com/koajs/router) And [`koa2-swagger-ui`](https://github.com/scttcper/koa2-swagger-ui)
+> Uses [`Zod@v3`](https://v3.zod.dev/), [`@koa/router`](https://github.com/koajs/router) And [`koa2-swagger-ui`](https://github.com/scttcper/koa2-swagger-ui)
 
 ## Usage
 
@@ -26,7 +26,7 @@ const app = new Koa();
 const router = new KoaRouter();
 ```
 
-### Create validation Zod object schema ([See Zod Documentation](https://github.com/colinhacks/zod#readme))
+### Create validation Zod object schema ([See Zod Documentation](https://v3.zod.dev/))
 
 ```js
 const RouterSchema: ZodValidatorProps = {
