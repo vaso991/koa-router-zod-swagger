@@ -1,16 +1,16 @@
 import { Context, Next } from 'koa';
-import { AnyZodObject, ZodEffects } from 'zod';
+import { ZodType } from 'zod';
 import { FileRequestObjectType, ResponseType } from './Types';
 
 export interface ZodValidatorProps {
   summary?: string;
   description?: string;
-  query?: AnyZodObject | ZodEffects<AnyZodObject>;
-  params?: AnyZodObject | ZodEffects<AnyZodObject>;
-  header?: AnyZodObject | ZodEffects<AnyZodObject>;
-  body?: AnyZodObject | ZodEffects<AnyZodObject>;
+  query?: ZodType;
+  params?: ZodType;
+  header?: ZodType;
+  body?: ZodType;
   files?: FileRequestObjectType;
-  filesValidator?: AnyZodObject | ZodEffects<AnyZodObject>;
+  filesValidator?: ZodType;
   response?: ResponseType;
 }
 

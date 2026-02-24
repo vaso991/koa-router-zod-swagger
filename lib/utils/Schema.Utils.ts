@@ -6,8 +6,23 @@ import {
   RequestBodyType,
 } from '../Types';
 import { ZodValidatorProps } from '../ZodValidator';
-import { AnyZodObject, ZodEffects } from 'zod';
-import { zodToJsonSchema } from 'zod-to-json-schema';
+import { ZodType } from 'zod';
+
+type ToJSONSchemaParams = Parameters<ZodType['toJSONSchema']>[0];
+
+const toJsonSchemaOptions: ToJSONSchemaParams = {
+  target: 'draft-7',
+  unrepresentable: 'any',
+  override(ctx) {
+    if (
+      (ctx.zodSchema as unknown as { def: { type: string } }).def.type ===
+      'date'
+    ) {
+      ctx.jsonSchema['type'] = 'string';
+      ctx.jsonSchema['format'] = 'date-time';
+    }
+  },
+};
 
 export const FillSchemaParameters = (
   options: PathParametersResponseType,
@@ -31,10 +46,10 @@ export const FillSchemaParameters = (
 
 const FillSchemaParameter = (
   parameters: ParameterType[],
-  object: AnyZodObject | ZodEffects<AnyZodObject>,
+  object: ZodType,
   type: string,
 ) => {
-  const schema = zodToJsonSchema(object) as JsonSchemaType;
+  const schema = object.toJSONSchema(toJsonSchemaOptions) as JsonSchemaType;
   if (schema.properties) {
     for (const [key, zodDesc] of Object.entries(schema.properties)) {
       const parameter: ParameterType = {
@@ -49,12 +64,12 @@ const FillSchemaParameter = (
   return parameters;
 };
 export const FillSchemaBody = (
-  zodSchema: AnyZodObject | ZodEffects<AnyZodObject>,
+  zodSchema: ZodType,
   files?: FileRequestObjectType,
 ): RequestBodyType | undefined => {
   const hasFiles = files && Object.keys(files).length > 0;
   const contentType = hasFiles ? 'multipart/form-data' : 'application/json';
-  const schema = zodToJsonSchema(zodSchema) as JsonSchemaType;
+  const schema = zodSchema.toJSONSchema(toJsonSchemaOptions) as JsonSchemaType;
 
   if (hasFiles) {
     GenerateSchemaBodyFiles(files, schema);

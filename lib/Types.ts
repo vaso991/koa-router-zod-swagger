@@ -1,14 +1,16 @@
 import { HTTP_STATUS_CODES } from './utils/Constants';
-import { AnyZodObject } from 'zod';
-import { JsonSchema7ObjectType, JsonSchema7Type } from 'zod-to-json-schema';
+import { ZodType } from 'zod';
 
-export type JsonSchemaType =
-  | JsonSchema7ObjectType
-  | {
-      properties?: Record<string, JsonSchemaType>;
-      additionalProperties?: boolean | JsonSchemaType;
-      required?: string[];
-    };
+export type JsonSchemaType = {
+  type?: string;
+  format?: string;
+  properties?: Record<string, JsonSchemaType>;
+  additionalProperties?: boolean | JsonSchemaType;
+  required?: string[];
+  items?: JsonSchemaType | JsonSchemaType[];
+  enum?: unknown[];
+  [key: string]: unknown;
+};
 
 export type ParameterType = {
   in: string;
@@ -16,7 +18,7 @@ export type ParameterType = {
   explode?: boolean;
   description?: string;
   required?: boolean;
-  schema: JsonSchema7Type;
+  schema: JsonSchemaType;
 };
 
 type RequestType = 'application/json' | 'multipart/form-data';
@@ -54,11 +56,11 @@ export type ResponseType = {
 } & (
   | {
       validate: true;
-      body: AnyZodObject;
+      body: ZodType;
     }
   | {
       validate?: false;
-      body?: AnyZodObject;
+      body?: ZodType;
     }
 );
 
