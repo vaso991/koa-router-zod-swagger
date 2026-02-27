@@ -14,12 +14,10 @@ const toJsonSchemaOptions: ToJSONSchemaParams = {
   target: 'draft-7',
   unrepresentable: 'any',
   override(ctx) {
-    if (
-      (ctx.zodSchema as unknown as { def: { type: string } }).def.type ===
-      'date'
-    ) {
-      ctx.jsonSchema['type'] = 'string';
-      ctx.jsonSchema['format'] = 'date-time';
+    const def = ctx.zodSchema._zod.def;
+    if (def.type === 'date') {
+      ctx.jsonSchema.type = 'string';
+      ctx.jsonSchema.format = 'date-time';
     }
   },
 };
