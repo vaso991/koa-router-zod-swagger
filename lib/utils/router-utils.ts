@@ -1,9 +1,9 @@
-import { ALLOWED_METHODS } from './Constants';
+import { ALLOWED_METHODS } from './constants';
 import Router from 'koa-router';
-import { PathObjectType, PathParametersResponseType } from '../Types';
-import { ZodValidatorProps } from '../ZodValidator';
-import { FillSchemaParameters } from './Schema.Utils';
-import { generateResponses } from './Response.Utils';
+import { PathObjectType, PathParametersResponseType } from '../types';
+import { ZodValidatorProps } from '../zod-validator';
+import { FillSchemaParameters } from './schema-utils';
+import { generateResponses } from './response-utils';
 
 const FormatPath = (path: string, specs: PathParametersResponseType) => {
   specs.parameters.forEach((param) => {

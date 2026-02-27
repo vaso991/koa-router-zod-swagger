@@ -1,4 +1,4 @@
-import { HTTP_STATUS_CODES } from './utils/Constants';
+import { HTTP_STATUS_CODES } from './utils/constants';
 import { ZodType } from 'zod';
 
 export type JsonSchemaType = {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
-import { PathParametersResponseType } from '../lib/Types';
-import { FillSchemaBody, FillSchemaParameters } from '../lib/utils/Schema.Utils';
+import { PathParametersResponseType } from '../lib/types';
+import { FillSchemaBody, FillSchemaParameters } from '../lib/utils/schema-utils';
 
 const createPathOptions = (): PathParametersResponseType => ({
   parameters: [],

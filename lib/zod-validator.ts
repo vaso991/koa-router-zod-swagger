@@ -1,6 +1,6 @@
 import { Context, Next } from 'koa';
 import { ZodType } from 'zod';
-import { FileRequestObjectType, ResponseType } from './Types';
+import { FileRequestObjectType, ResponseType } from './types';
 
 export interface ZodValidatorProps {
   summary?: string;

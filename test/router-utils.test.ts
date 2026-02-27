@@ -1,8 +1,8 @@
 import Router from 'koa-router';
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
-import { ZodValidator } from '../lib/ZodValidator';
-import { MapAllMethods } from '../lib/utils/Router.Utils';
+import { ZodValidator } from '../lib/zod-validator';
+import { MapAllMethods } from '../lib/utils/router-utils';
 
 describe('Router.Utils', () => {
   it('maps route schemas to swagger paths and formats path params', () => {

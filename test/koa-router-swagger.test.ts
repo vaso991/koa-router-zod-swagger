@@ -2,8 +2,8 @@ import Router from 'koa-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import * as swaggerUi from 'koa2-swagger-ui';
 import { z } from 'zod';
-import { KoaRouterSwagger } from '../lib/KoaRouterSwagger';
-import { ZodValidator } from '../lib/ZodValidator';
+import { KoaRouterSwagger } from '../lib/koa-router-swagger';
+import { ZodValidator } from '../lib/zod-validator';
 
 describe('KoaRouterSwagger', () => {
   afterEach(() => {

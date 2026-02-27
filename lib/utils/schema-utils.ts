@@ -4,8 +4,8 @@ import {
   ParameterType,
   PathParametersResponseType,
   RequestBodyType,
-} from '../Types';
-import { ZodValidatorProps } from '../ZodValidator';
+} from '../types';
+import { ZodValidatorProps } from '../zod-validator';
 import { ZodType } from 'zod';
 
 type ToJSONSchemaParams = Parameters<ZodType['toJSONSchema']>[0];

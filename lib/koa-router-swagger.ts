@@ -1,7 +1,7 @@
 import Router from 'koa-router';
 import { koaSwagger, KoaSwaggerUiOptions } from 'koa2-swagger-ui';
-import { MapAllMethods } from './utils/Router.Utils';
-import { PathObjectType } from './Types';
+import { MapAllMethods } from './utils/router-utils';
+import { PathObjectType } from './types';
 
 const KoaRouterSwagger = (
   router: Router,

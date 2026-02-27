@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
-import { generateResponses } from '../lib/utils/Response.Utils';
+import { generateResponses } from '../lib/utils/response-utils';
 
 describe('Response.Utils', () => {
   it('returns default swagger responses when validator props are missing', () => {

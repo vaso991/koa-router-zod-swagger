@@ -1,6 +1,6 @@
-import { ZodValidatorProps } from '../ZodValidator';
-import { JsonSchemaType, SwaggerResponseType } from '../Types';
-import { DEFAULT_RESPONSES_CODES } from './Constants';
+import { ZodValidatorProps } from '../zod-validator';
+import { JsonSchemaType, SwaggerResponseType } from '../types';
+import { DEFAULT_RESPONSES_CODES } from './constants';
 import statuses from 'statuses';
 import { ZodType } from 'zod';
 

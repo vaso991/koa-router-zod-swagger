@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { ZodType } from 'zod';
-import { ZodValidator } from '../lib/ZodValidator';
+import { ZodValidator } from '../lib/zod-validator';
 
 const createParser = () =>
   ({
