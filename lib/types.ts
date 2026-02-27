@@ -56,11 +56,11 @@ export type ResponseType = {
 } & (
   | {
       validate: true;
-      body: ZodType;
+      body: ZodType<any>;
     }
   | {
       validate?: false;
-      body?: ZodType;
+      body?: ZodType<any>;
     }
 );
 
