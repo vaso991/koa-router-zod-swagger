@@ -2,6 +2,11 @@
 
 > Validate router input and host swagger ui based on @koa/router and zod schema
 
+## Version Compatibility
+
+- `koa-router-zod-swagger@^2` is compatible with `zod@^4`.
+- `koa-router-zod-swagger@^1` remains available for `zod@^3`.
+
 ## Installation
 
 ```sh
@@ -11,7 +16,7 @@ $ yarn add koa-router-zod-swagger zod
 
 $ pnpm install koa-router-zod-swagger zod
 ```
-> Uses [`Zod@v3`](https://v3.zod.dev/), [`@koa/router`](https://github.com/koajs/router) And [`koa2-swagger-ui`](https://github.com/scttcper/koa2-swagger-ui)
+> Uses [`Zod@v4`](https://zod.dev/), [`@koa/router`](https://github.com/koajs/router) And [`koa2-swagger-ui`](https://github.com/scttcper/koa2-swagger-ui)
 
 ## Usage
 
@@ -26,7 +31,7 @@ const app = new Koa();
 const router = new KoaRouter();
 ```
 
-### Create validation Zod object schema ([See Zod Documentation](https://v3.zod.dev/))
+### Create validation Zod object schema ([See Zod Documentation](https://zod.dev/))
 
 ```js
 const RouterSchema: ZodValidatorProps = {
