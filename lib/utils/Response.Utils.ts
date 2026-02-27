@@ -2,7 +2,23 @@ import { ZodValidatorProps } from '../ZodValidator';
 import { JsonSchemaType, SwaggerResponseType } from '../Types';
 import { DEFAULT_RESPONSES_CODES } from './Constants';
 import statuses from 'statuses';
-import zodToJsonSchema from 'zod-to-json-schema';
+import { ZodType } from 'zod';
+
+type ToJSONSchemaParams = Parameters<ZodType['toJSONSchema']>[0];
+
+const toJsonSchemaOptions: ToJSONSchemaParams = {
+  target: 'draft-7',
+  unrepresentable: 'any',
+  override(ctx) {
+    if (
+      (ctx.zodSchema as unknown as { def: { type: string } }).def.type ===
+      'date'
+    ) {
+      ctx.jsonSchema['type'] = 'string';
+      ctx.jsonSchema['format'] = 'date-time';
+    }
+  },
+};
 export const generateResponses = (
   validatorProps?: ZodValidatorProps,
 ): SwaggerResponseType => {
@@ -22,7 +38,9 @@ export const generateResponses = (
   if (validatorProps?.response?.body) {
     response[responseStatusCodes[0]].content = {
       'application/json': {
-        schema: zodToJsonSchema(validatorProps.response.body) as JsonSchemaType,
+        schema: validatorProps.response.body.toJSONSchema(
+          toJsonSchemaOptions,
+        ) as JsonSchemaType,
       },
     };
   }
