@@ -10,6 +10,9 @@
   ],
   "homepage": "https://github.com/vaso991/koa-router-zod-swagger#readme",
   "author": "vaso991 (https://github.com/vaso991/)",
+  "repository": {
+    "url": "https://github.com/vaso991/koa-router-zod-swagger"
+  },
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
