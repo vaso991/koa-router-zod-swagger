@@ -12,8 +12,6 @@
 ```sh
 $ npm install koa-router-zod-swagger zod
 
-$ yarn add koa-router-zod-swagger zod
-
 $ pnpm install koa-router-zod-swagger zod
 ```
 > Uses [`Zod@v4`](https://zod.dev/), [`@koa/router`](https://github.com/koajs/router) And [`koa2-swagger-ui`](https://github.com/scttcper/koa2-swagger-ui)

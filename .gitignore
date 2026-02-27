@@ -8,13 +8,10 @@ dist/
 logs
 *.log
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
 # Node modules
 node_modules/
 pnpm-lock.yaml
-yarn.lock
 
 # Ignore editos configs
 .vscode
