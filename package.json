@@ -22,7 +22,9 @@
     "watch:example": "node --watch example/index.js",
     "clean": "rimraf dist",
     "prepack": "npm run build",
-    "test": "eslint ."
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "peerDependencies": {
     "koa": "^2.14.2",
@@ -45,7 +47,8 @@
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-prettier": "^5.5.1",
     "rimraf": "^6.0.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^4.0.18"
   },
   "optionalDependencies": {
     "koa-body": "^6.0.1"
