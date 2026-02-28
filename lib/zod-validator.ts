@@ -72,7 +72,7 @@ export interface ZodValidatorProps {
 }
 
 export const ZodValidator = (props: ZodValidatorProps) => {
-  const _ValidatorMiddleware = async (ctx: Context, next: Next) => {
+  const validatorMiddleware = async (ctx: Context, next: Next) => {
     const request = ctx.request as Record<string, any>;
     const context = ctx as unknown as Record<string, any>;
     const assignParsedData =
@@ -127,6 +127,6 @@ export const ZodValidator = (props: ZodValidatorProps) => {
       return next();
     }
   };
-  _ValidatorMiddleware._VALIDATOR_PROPS = props;
-  return _ValidatorMiddleware;
+  validatorMiddleware._VALIDATOR_PROPS = props;
+  return validatorMiddleware;
 };

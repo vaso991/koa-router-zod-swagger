@@ -1,31 +1,26 @@
 import Router from 'koa-router';
 import { koaSwagger, KoaSwaggerUiOptions } from 'koa2-swagger-ui';
-import { MapAllMethods } from './utils/router-utils';
-import { PathObjectType } from './types';
+import { mapAllMethods } from './utils/router-utils';
 
 const KoaRouterSwagger = (
   router: Router,
   uiConfig: Partial<KoaSwaggerUiOptions>,
 ) => {
-  const paths = MapAllMethods(router);
+  const paths = mapAllMethods(router);
 
-  return CreateKoaSwagger(paths, router, uiConfig);
+  const config: Partial<KoaSwaggerUiOptions> = {
+    ...uiConfig,
+    swaggerOptions: {
+      ...uiConfig.swaggerOptions,
+      spec: {
+        ...uiConfig.swaggerOptions?.spec,
+        openapi: '3.0.0',
+        paths,
+      },
+    },
+  };
+
+  return koaSwagger(config);
 };
-
-function CreateKoaSwagger(
-  paths: PathObjectType,
-  router: Router,
-  uiConfig: Partial<KoaSwaggerUiOptions>,
-) {
-  if (!uiConfig.swaggerOptions) {
-    uiConfig.swaggerOptions = {};
-  }
-  if (!uiConfig.swaggerOptions.spec) {
-    uiConfig.swaggerOptions.spec = {};
-  }
-  uiConfig.swaggerOptions.spec.openapi = '3.0.0';
-  uiConfig.swaggerOptions.spec.paths = paths;
-  return koaSwagger(uiConfig);
-}
 
 export { KoaRouterSwagger };

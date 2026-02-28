@@ -7,34 +7,21 @@ import {
 } from '../types';
 import { ZodValidatorProps } from '../zod-validator';
 import { ZodType } from 'zod';
+import { toJsonSchemaOptions } from './zod-schema-options';
 
-type ToJSONSchemaParams = Parameters<ZodType['toJSONSchema']>[0];
-
-const toJsonSchemaOptions: ToJSONSchemaParams = {
-  target: 'draft-7',
-  unrepresentable: 'any',
-  override(ctx) {
-    const def = ctx.zodSchema._zod.def;
-    if (def.type === 'date') {
-      ctx.jsonSchema.type = 'string';
-      ctx.jsonSchema.format = 'date-time';
-    }
-  },
-};
-
-export const FillSchemaParameters = (
+export const fillSchemaParameters = (
   options: PathParametersResponseType,
   validatorProps?: ZodValidatorProps,
 ) => {
   if (validatorProps) {
     validatorProps.params &&
-      FillSchemaParameter(options.parameters, validatorProps.params, 'path');
+      fillSchemaParameter(options.parameters, validatorProps.params, 'path');
     validatorProps.query &&
-      FillSchemaParameter(options.parameters, validatorProps.query, 'query');
+      fillSchemaParameter(options.parameters, validatorProps.query, 'query');
     validatorProps.header &&
-      FillSchemaParameter(options.parameters, validatorProps.header, 'header');
+      fillSchemaParameter(options.parameters, validatorProps.header, 'header');
     if (validatorProps.body) {
-      options.requestBody = FillSchemaBody(
+      options.requestBody = fillSchemaBody(
         validatorProps.body,
         validatorProps.files,
       );
@@ -42,7 +29,7 @@ export const FillSchemaParameters = (
   }
 };
 
-const FillSchemaParameter = (
+const fillSchemaParameter = (
   parameters: ParameterType[],
   object: ZodType,
   type: string,
@@ -59,9 +46,9 @@ const FillSchemaParameter = (
       parameters.push(parameter);
     }
   }
-  return parameters;
 };
-export const FillSchemaBody = (
+
+export const fillSchemaBody = (
   zodSchema: ZodType,
   files?: FileRequestObjectType,
 ): RequestBodyType | undefined => {
@@ -70,7 +57,7 @@ export const FillSchemaBody = (
   const schema = zodSchema.toJSONSchema(toJsonSchemaOptions) as JsonSchemaType;
 
   if (hasFiles) {
-    GenerateSchemaBodyFiles(files, schema);
+    generateSchemaBodyFiles(files, schema);
   }
   return {
     content: {
@@ -81,7 +68,7 @@ export const FillSchemaBody = (
   };
 };
 
-const GenerateSchemaBodyFiles = (
+const generateSchemaBodyFiles = (
   files: FileRequestObjectType,
   schema: JsonSchemaType,
 ) => {
@@ -91,38 +78,28 @@ const GenerateSchemaBodyFiles = (
   if (!schema.required) {
     schema.required = [];
   }
+  const properties = schema.properties as Record<string, JsonSchemaType>;
+  const required = schema.required;
+
   for (const [key, file] of Object.entries(files)) {
     if (file === false) {
       continue;
     }
     if (file === true) {
-      // @ts-ignore
-      schema.properties[key] = {
-        type: 'string',
-        format: 'binary',
-      };
-      schema.required.push(key);
+      properties[key] = { type: 'string', format: 'binary' };
+      required.push(key);
       continue;
     }
     if (file.multiple) {
-      // @ts-ignore
-      schema.properties[key] = {
+      properties[key] = {
         type: 'array',
-        items: {
-          type: 'string',
-          format: 'binary',
-        },
+        items: { type: 'string', format: 'binary' },
       };
     } else {
-      // @ts-ignore
-      schema.properties[key] = {
-        type: 'string',
-        format: 'binary',
-      };
+      properties[key] = { type: 'string', format: 'binary' };
     }
     if (file.optional !== true) {
-      schema.required.push(key);
+      required.push(key);
     }
   }
-  return schema;
 };

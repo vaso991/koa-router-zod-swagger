@@ -2,7 +2,7 @@ import Router from 'koa-router';
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 import { ZodValidator } from '../lib/zod-validator';
-import { MapAllMethods } from '../lib/utils/router-utils';
+import { mapAllMethods } from '../lib/utils/router-utils';
 
 describe('Router.Utils', () => {
   it('maps route schemas to swagger paths and formats path params', () => {
@@ -24,7 +24,7 @@ describe('Router.Utils', () => {
     );
     router.options('/users/:id', async () => {});
 
-    const paths = MapAllMethods(router);
+    const paths = mapAllMethods(router);
     const getPath = paths['/api/users/{id}']?.get;
 
     expect(Object.keys(paths)).toEqual(['/api/users/{id}']);
@@ -98,7 +98,7 @@ describe('Router.Utils', () => {
       async () => {},
     );
 
-    const paths = MapAllMethods(router);
+    const paths = mapAllMethods(router);
     const testGet = paths['/test']?.get;
     const filesPost = paths['/files']?.post;
     const responseGet = paths['/response']?.get;

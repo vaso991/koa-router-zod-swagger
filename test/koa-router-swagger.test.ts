@@ -33,19 +33,25 @@ describe('KoaRouterSwagger', () => {
       .spyOn(swaggerUi, 'koaSwagger')
       .mockImplementation((config) => config as never);
 
-    const middleware = KoaRouterSwagger(router, uiConfig);
+    const result = KoaRouterSwagger(router, uiConfig);
 
     expect(koaSwaggerSpy).toHaveBeenCalledTimes(1);
-    expect(middleware).toBe(uiConfig);
-    expect(uiConfig.swaggerOptions.spec.info).toEqual({ title: 'Demo API' });
-    expect(uiConfig.swaggerOptions.spec.openapi).toBe('3.0.0');
-    expect(uiConfig.swaggerOptions.spec.paths).toEqual(
+    expect(result).not.toBe(uiConfig);
+
+    const resultSpec = (result as any).swaggerOptions.spec;
+    expect(resultSpec.info).toEqual({ title: 'Demo API' });
+    expect(resultSpec.openapi).toBe('3.0.0');
+    expect(resultSpec.paths).toEqual(
       expect.objectContaining({
         '/v1/posts/{id}': expect.objectContaining({
           post: expect.any(Object),
         }),
       }),
     );
+
+    // original uiConfig must not be mutated
+    expect((uiConfig.swaggerOptions.spec as any).openapi).toBeUndefined();
+    expect((uiConfig.swaggerOptions.spec as any).paths).toBeUndefined();
   });
 
   it('initializes swaggerOptions and spec when omitted', () => {
@@ -57,17 +63,19 @@ describe('KoaRouterSwagger', () => {
       .spyOn(swaggerUi, 'koaSwagger')
       .mockImplementation((config) => config as never);
 
-    const middleware = KoaRouterSwagger(router, uiConfig);
+    const result = KoaRouterSwagger(router, uiConfig);
 
     expect(koaSwaggerSpy).toHaveBeenCalledTimes(1);
-    expect(middleware).toBe(uiConfig);
-    expect((uiConfig as any).swaggerOptions.spec.openapi).toBe('3.0.0');
-    expect((uiConfig as any).swaggerOptions.spec.paths).toEqual(
+    expect((result as any).swaggerOptions.spec.openapi).toBe('3.0.0');
+    expect((result as any).swaggerOptions.spec.paths).toEqual(
       expect.objectContaining({
         '/health': expect.objectContaining({
           get: expect.any(Object),
         }),
       }),
     );
+
+    // original uiConfig must not be mutated
+    expect(uiConfig).toEqual({});
   });
 });

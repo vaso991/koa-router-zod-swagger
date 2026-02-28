@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 import { PathParametersResponseType } from '../lib/types';
-import { FillSchemaBody, FillSchemaParameters } from '../lib/utils/schema-utils';
+import { fillSchemaBody, fillSchemaParameters } from '../lib/utils/schema-utils';
 
 const createPathOptions = (): PathParametersResponseType => ({
   parameters: [],
@@ -12,7 +12,7 @@ describe('Schema.Utils', () => {
   it('fills path, query, header and request body schema from validator props', () => {
     const options = createPathOptions();
 
-    FillSchemaParameters(options, {
+    fillSchemaParameters(options, {
       params: z.object({ id: z.string() }),
       query: z.object({ search: z.string() }),
       header: z.object({ 'x-request-id': z.string() }),
@@ -53,14 +53,14 @@ describe('Schema.Utils', () => {
 
   it('does not mutate options when validator props are missing', () => {
     const options = createPathOptions();
-    FillSchemaParameters(options);
+    fillSchemaParameters(options);
 
     expect(options.parameters).toHaveLength(0);
     expect(options.requestBody).toBeUndefined();
   });
 
   it('generates multipart body schema for file uploads', () => {
-    const body = FillSchemaBody(z.object({ title: z.string().optional() }), {
+    const body = fillSchemaBody(z.object({ title: z.string().optional() }), {
       avatar: true,
       gallery: { multiple: true },
       optionalFile: { optional: true },
@@ -91,7 +91,7 @@ describe('Schema.Utils', () => {
   });
 
   it('initializes schema containers for files when base schema is not an object', () => {
-    const body = FillSchemaBody(z.string(), { file: true });
+    const body = fillSchemaBody(z.string(), { file: true });
     const multipartSchema = body?.content['multipart/form-data']?.schema;
 
     expect(multipartSchema?.properties?.file).toEqual({
@@ -102,7 +102,7 @@ describe('Schema.Utils', () => {
   });
 
   it('maps coerced date fields to date-time format from example patterns', () => {
-    const body = FillSchemaBody(
+    const body = fillSchemaBody(
       z.object({
         date: z.coerce.date(),
       }),

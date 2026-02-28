@@ -1,24 +1,9 @@
 import { ZodValidatorProps } from '../zod-validator';
 import { JsonSchemaType, SwaggerResponseType } from '../types';
 import { DEFAULT_RESPONSES_CODES } from './constants';
+import { toJsonSchemaOptions } from './zod-schema-options';
 import statuses from 'statuses';
-import { ZodType } from 'zod';
 
-type ToJSONSchemaParams = Parameters<ZodType['toJSONSchema']>[0];
-
-const toJsonSchemaOptions: ToJSONSchemaParams = {
-  target: 'draft-7',
-  unrepresentable: 'any',
-  override(ctx) {
-    if (
-      (ctx.zodSchema as unknown as { def: { type: string } }).def.type ===
-      'date'
-    ) {
-      ctx.jsonSchema['type'] = 'string';
-      ctx.jsonSchema['format'] = 'date-time';
-    }
-  },
-};
 export const generateResponses = (
   validatorProps?: ZodValidatorProps,
 ): SwaggerResponseType => {

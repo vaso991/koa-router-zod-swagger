@@ -40,7 +40,7 @@ export type PathParametersResponseType = {
   parameters: ParameterType[];
   requestBody?: RequestBodyType;
   responses: SwaggerResponseType;
-  tags?: [string];
+  tags?: string[];
 };
 
 export type PathObjectType = {
