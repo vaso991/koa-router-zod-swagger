@@ -5,12 +5,12 @@ import { FileRequestObjectType, ResponseType } from './types';
 export interface ZodValidatorProps {
   summary?: string;
   description?: string;
-  query?: ZodType;
-  params?: ZodType;
-  header?: ZodType;
-  body?: ZodType;
+  query?: ZodType<any>;
+  params?: ZodType<any>;
+  header?: ZodType<any>;
+  body?: ZodType<any>;
   files?: FileRequestObjectType;
-  filesValidator?: ZodType;
+  filesValidator?: ZodType<any>;
   response?: ResponseType;
 }
 
