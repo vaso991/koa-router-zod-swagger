@@ -22,7 +22,7 @@
   "scripts": {
     "build": "npm run clean && tsc",
     "watch:ts": "tsc -w",
-    "watch:example": "node --watch example/index.js",
+    "watch:example": "node --watch --experimental-strip-types example/index.ts",
     "clean": "rimraf dist",
     "prepack": "npm run build",
     "lint": "eslint .",
