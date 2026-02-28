@@ -90,15 +90,44 @@ router.post('/api/:param1', ZodValidator(RouterSchema), (ctx) => {
 });
 ```
 
-### Set `assignParsedData` Globally
+### `assignParsedData`
+
+By default `ZodValidator` validates the request but leaves the raw request data untouched. Zod schemas can also **transform** values (e.g. `z.coerce.number()` turns the string `"42"` into the number `42`). Setting `assignParsedData` writes the parsed (and transformed) result back to the request so your handler receives the coerced types.
+
+Accepted values:
+
+| Value | Effect |
+|---|---|
+| `false` / omitted | Validate only — request data unchanged |
+| `true` | Write parsed result back for all targets |
+| `['query', 'params', 'body', 'header', 'files']` | Write back only for the listed targets |
+
+#### Set globally
+
+Applies to every route unless overridden per-route:
 
 ```js
 setZodValidatorGlobalConfig({
-  assignParsedData: ['query', 'params', 'body'],
+  assignParsedData: true,
 });
 ```
 
-Per-route `assignParsedData` still works and overrides the global value.
+#### Override per route
+
+A per-route value always takes precedence over the global setting:
+
+```js
+router.get(
+  '/items',
+  ZodValidator({
+    query: z.object({ page: z.coerce.number() }),
+    assignParsedData: ['query'], // only write back query, regardless of global config
+  }),
+  (ctx) => {
+    ctx.request.query.page; // number, not string
+  },
+);
+```
 
 ### Serve Swagger Docs (pass [koa2-swagger-ui](https://github.com/scttcper/koa2-swagger-ui#config) config as `uiConfig`)
 
