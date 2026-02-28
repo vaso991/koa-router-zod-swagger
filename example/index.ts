@@ -7,7 +7,12 @@ import {
   ZodValidator,
   KoaRouterSwagger,
   type ZodValidatorProps,
+  setZodValidatorGlobalConfig
 } from '../dist/index.js';
+
+setZodValidatorGlobalConfig({
+  assignParsedData: true,
+});
 
 const app = new Koa();
 
@@ -128,7 +133,10 @@ router.post(
     },
     filesValidator: z.object({
       file: z.object({
-        size: z.number().min(5 * 1000).max(7 * 1000),
+        size: z
+          .number()
+          .min(5 * 1000)
+          .max(7 * 1000),
         mimetype: z.enum(['text/html']),
       }),
     }),

@@ -24,7 +24,12 @@ $ pnpm install koa-router-zod-swagger zod
 import Koa from 'koa';
 import KoaRouter from 'koa-router';
 import { z } from 'zod';
-import { ZodValidator, ZodValidatorProps, KoaRouterSwagger } from 'koa-router-zod-swagger';
+import {
+  ZodValidator,
+  ZodValidatorProps,
+  KoaRouterSwagger,
+  setZodValidatorGlobalConfig,
+} from 'koa-router-zod-swagger';
 const app = new Koa();
 const router = new KoaRouter();
 ```
@@ -84,6 +89,16 @@ router.post('/api/:param1', ZodValidator(RouterSchema), (ctx) => {
   };
 });
 ```
+
+### Set `assignParsedData` Globally
+
+```js
+setZodValidatorGlobalConfig({
+  assignParsedData: ['query', 'params', 'body'],
+});
+```
+
+Per-route `assignParsedData` still works and overrides the global value.
 
 ### Serve Swagger Docs (pass [koa2-swagger-ui](https://github.com/scttcper/koa2-swagger-ui#config) config as `uiConfig`)
 
