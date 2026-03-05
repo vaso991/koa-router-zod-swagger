@@ -14,6 +14,7 @@ $ npm install koa-router-zod-swagger zod
 
 $ pnpm install koa-router-zod-swagger zod
 ```
+
 > Uses [`Zod@v4`](https://zod.dev/), [`@koa/router`](https://github.com/koajs/router) And [`koa2-swagger-ui`](https://github.com/scttcper/koa2-swagger-ui)
 
 ## Usage
@@ -79,7 +80,9 @@ const RouterSchema: ZodValidatorProps = {
   }
 };
 ```
+
 ### Validate
+
 ```js
 router.post('/api/:param1', ZodValidator(RouterSchema), (ctx) => {
   ctx.body = {
@@ -96,11 +99,11 @@ By default `ZodValidator` validates the request but leaves the raw request data 
 
 Accepted values:
 
-| Value | Effect |
-|---|---|
-| `false` / omitted | Validate only — request data unchanged |
-| `true` | Write parsed result back for all targets |
-| `['query', 'params', 'body', 'header', 'files']` | Write back only for the listed targets |
+| Value                                            | Effect                                   |
+| ------------------------------------------------ | ---------------------------------------- |
+| `false` / omitted                                | Validate only — request data unchanged   |
+| `true`                                           | Write parsed result back for all targets |
+| `['query', 'params', 'body', 'header', 'files']` | Write back only for the listed targets   |
 
 #### Set globally
 
@@ -109,6 +112,9 @@ Applies to every route unless overridden per-route:
 ```js
 setZodValidatorGlobalConfig({
   assignParsedData: true,
+  toJsonSchemaOptions: {
+    target: 'draft-2020-12',
+  },
 });
 ```
 

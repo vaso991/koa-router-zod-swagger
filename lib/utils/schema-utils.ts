@@ -7,7 +7,7 @@ import {
 } from '../types';
 import { ZodValidatorProps } from '../zod-validator';
 import { ZodType } from 'zod';
-import { toJsonSchemaOptions } from './zod-schema-options';
+import { getToJsonSchemaOptions } from './zod-schema-options';
 
 export const fillSchemaParameters = (
   options: PathParametersResponseType,
@@ -34,7 +34,9 @@ const fillSchemaParameter = (
   object: ZodType,
   type: string,
 ) => {
-  const schema = object.toJSONSchema(toJsonSchemaOptions) as JsonSchemaType;
+  const schema = object.toJSONSchema(
+    getToJsonSchemaOptions(),
+  ) as JsonSchemaType;
   if (schema.properties) {
     for (const [key, zodDesc] of Object.entries(schema.properties)) {
       const parameter: ParameterType = {
@@ -54,7 +56,9 @@ export const fillSchemaBody = (
 ): RequestBodyType | undefined => {
   const hasFiles = files && Object.keys(files).length > 0;
   const contentType = hasFiles ? 'multipart/form-data' : 'application/json';
-  const schema = zodSchema.toJSONSchema(toJsonSchemaOptions) as JsonSchemaType;
+  const schema = zodSchema.toJSONSchema(
+    getToJsonSchemaOptions(),
+  ) as JsonSchemaType;
 
   if (hasFiles) {
     generateSchemaBodyFiles(files, schema);

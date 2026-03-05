@@ -1,3 +1,5 @@
+import { ToJsonSchemaOptions } from './utils/zod-schema-options';
+
 export type ParsedAssignTarget =
   | 'query'
   | 'params'
@@ -7,6 +9,7 @@ export type ParsedAssignTarget =
 
 export interface ZodValidatorGlobalConfig {
   assignParsedData?: boolean | ParsedAssignTarget[];
+  toJsonSchemaOptions?: ToJsonSchemaOptions;
 }
 
 let zodValidatorGlobalConfig: ZodValidatorGlobalConfig = {};
@@ -14,7 +17,18 @@ let zodValidatorGlobalConfig: ZodValidatorGlobalConfig = {};
 export const setZodValidatorGlobalConfig = (
   config: ZodValidatorGlobalConfig,
 ): void => {
-  zodValidatorGlobalConfig = { ...zodValidatorGlobalConfig, ...config };
+  if (config.toJsonSchemaOptions !== undefined) {
+    const mergedToJsonSchemaOptions = Object.assign(
+      {},
+      zodValidatorGlobalConfig.toJsonSchemaOptions,
+      config.toJsonSchemaOptions,
+    );
+    Object.assign(zodValidatorGlobalConfig, config, {
+      toJsonSchemaOptions: mergedToJsonSchemaOptions,
+    });
+    return;
+  }
+  Object.assign(zodValidatorGlobalConfig, config);
 };
 
 export const resetZodValidatorGlobalConfig = (): void => {

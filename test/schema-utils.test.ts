@@ -1,7 +1,11 @@
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { z } from 'zod';
 import { PathParametersResponseType } from '../lib/types';
 import { fillSchemaBody, fillSchemaParameters } from '../lib/utils/schema-utils';
+import {
+  resetZodValidatorGlobalConfig,
+  setZodValidatorGlobalConfig,
+} from '../lib/zod-validator-config';
 
 const createPathOptions = (): PathParametersResponseType => ({
   parameters: [],
@@ -9,6 +13,10 @@ const createPathOptions = (): PathParametersResponseType => ({
 });
 
 describe('Schema.Utils', () => {
+  beforeEach(() => {
+    resetZodValidatorGlobalConfig();
+  });
+
   it('fills path, query, header and request body schema from validator props', () => {
     const options = createPathOptions();
 
@@ -113,6 +121,42 @@ describe('Schema.Utils', () => {
       expect.objectContaining({
         type: 'string',
         format: 'date-time',
+      }),
+    );
+  });
+
+  it('uses global toJsonSchemaOptions and merges them across set calls', () => {
+    setZodValidatorGlobalConfig({
+      toJsonSchemaOptions: {
+        target: 'draft-2020-12',
+      },
+    });
+    setZodValidatorGlobalConfig({
+      toJsonSchemaOptions: {
+        override(ctx) {
+          const def = ctx.zodSchema._zod.def;
+          if (def.type === 'date') {
+            ctx.jsonSchema.type = 'string';
+            ctx.jsonSchema.format = 'custom-date-time';
+          }
+        },
+      },
+    });
+
+    const body = fillSchemaBody(
+      z.object({
+        createdAt: z.date(),
+      }),
+    );
+    const jsonSchema = body?.content['application/json']?.schema;
+
+    expect(jsonSchema?.$schema).toBe(
+      'https://json-schema.org/draft/2020-12/schema',
+    );
+    expect(jsonSchema?.properties?.createdAt).toEqual(
+      expect.objectContaining({
+        type: 'string',
+        format: 'custom-date-time',
       }),
     );
   });

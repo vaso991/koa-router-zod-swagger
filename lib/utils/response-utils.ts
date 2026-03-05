@@ -1,7 +1,7 @@
 import { ZodValidatorProps } from '../zod-validator';
 import { JsonSchemaType, SwaggerResponseType } from '../types';
 import { DEFAULT_RESPONSES_CODES } from './constants';
-import { toJsonSchemaOptions } from './zod-schema-options';
+import { getToJsonSchemaOptions } from './zod-schema-options';
 import statuses from 'statuses';
 
 export const generateResponses = (
@@ -24,7 +24,7 @@ export const generateResponses = (
     response[responseStatusCodes[0]].content = {
       'application/json': {
         schema: validatorProps.response.body.toJSONSchema(
-          toJsonSchemaOptions,
+          getToJsonSchemaOptions(),
         ) as JsonSchemaType,
       },
     };

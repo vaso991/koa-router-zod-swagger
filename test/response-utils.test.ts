@@ -1,8 +1,16 @@
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { z } from 'zod';
 import { generateResponses } from '../lib/utils/response-utils';
+import {
+  resetZodValidatorGlobalConfig,
+  setZodValidatorGlobalConfig,
+} from '../lib/zod-validator-config';
 
 describe('Response.Utils', () => {
+  beforeEach(() => {
+    resetZodValidatorGlobalConfig();
+  });
+
   it('returns default swagger responses when validator props are missing', () => {
     const responses = generateResponses();
 
@@ -49,6 +57,35 @@ describe('Response.Utils', () => {
     expect(schema?.properties?.name).toEqual(
       expect.objectContaining({
         type: 'string',
+      }),
+    );
+  });
+
+  it('applies global toJsonSchemaOptions when generating response schemas', () => {
+    setZodValidatorGlobalConfig({
+      toJsonSchemaOptions: {
+        target: 'draft-2020-12',
+      },
+    });
+
+    const responses = generateResponses({
+      response: {
+        validate: true,
+        possibleStatusCodes: [200],
+        body: z.object({
+          createdAt: z.date(),
+        }),
+      },
+    });
+
+    const schema = responses['200'].content?.['application/json']?.schema;
+    expect(schema?.$schema).toBe(
+      'https://json-schema.org/draft/2020-12/schema',
+    );
+    expect(schema?.properties?.createdAt).toEqual(
+      expect.objectContaining({
+        type: 'string',
+        format: 'date-time',
       }),
     );
   });
