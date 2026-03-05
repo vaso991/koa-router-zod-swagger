@@ -1,9 +1,10 @@
 import { ZodType } from 'zod';
+import { getZodValidatorGlobalConfig } from '../zod-validator-config';
 
-type ToJSONSchemaParams = Parameters<ZodType['toJSONSchema']>[0];
+export type ToJsonSchemaOptions = Parameters<ZodType['toJSONSchema']>[0];
 
-export const toJsonSchemaOptions: ToJSONSchemaParams = {
-  target: 'draft-7',
+const toJsonSchemaOptionsDefault: ToJsonSchemaOptions = {
+  target: 'openapi-3.0',
   unrepresentable: 'any',
   override(ctx) {
     const def = ctx.zodSchema._zod.def;
@@ -12,4 +13,12 @@ export const toJsonSchemaOptions: ToJSONSchemaParams = {
       ctx.jsonSchema.format = 'date-time';
     }
   },
+};
+
+export const getToJsonSchemaOptions = (): ToJsonSchemaOptions => {
+  return Object.assign(
+    {},
+    toJsonSchemaOptionsDefault,
+    getZodValidatorGlobalConfig().toJsonSchemaOptions,
+  );
 };
